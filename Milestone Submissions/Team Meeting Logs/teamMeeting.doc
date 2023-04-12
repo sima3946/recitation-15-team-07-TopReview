@@ -1,0 +1,36 @@
+Weekly Meeting notes
+First meeting:
+Project: TopReview
+Attendees: Kira, Tyler, Alex, Brandon
+Date&Time: 4/8; 2:00-3:00 pm 
+
+Agenda:
+Main discussion topic: 
+    getting ready for week one 
+    Review of the wireframe, Case diagram.
+    The functionality of the webpages.
+    What we would like to work on
+
+Notes:
+    Key information so that we can review it later.
+    What is meant by the edited reviews and sentiments in the use case diagram? 
+    We need to revise the use case diagram. (We should see Gunhi by Wednesday if he doesn’t reply sooner.)
+    Looking at the APIs for IMBD, Rotten Tomatoes 
+    Amazon web services account 
+        We need help accessing them
+            https://www.rogerebert.com/
+            https://rapidapi.com/Prastiwar/api/metacriticapi
+            https://github.com/zkilleb/ebert-api
+
+Outcomes:
+    Key decisions!!
+        Change the wireframe and the use case diagram.
+        Tyler, Alex, Kira, and Sira will work on the front end.
+    Actions:
+        What will people be working on throughout the week?
+        Kira and Sira change the wireframe.
+        Gunhi change the Use case Diagram.
+        Everyone make sure the Project Guideline is ready to submit
+        Kira figure out the linking error in the project board. 
+        Brandon ask TA/Instructor about APIs we can use. 
+        Tyler, Alex, Kira, and Sira start on front-end design.
