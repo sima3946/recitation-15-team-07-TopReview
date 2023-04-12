@@ -1,0 +1,4 @@
+A list of updates you have made since the last meeting.
+Here is are some links that help you write release notes:
+ - Automated Release Notes: https: //docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+ - Manually created Release Notes: https://simonwillison.net/2022/Jan/31/release-notes/

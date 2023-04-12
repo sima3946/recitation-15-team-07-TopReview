@@ -1,0 +1,7 @@
+What the scibe is responsible for:
+- The scribe will be responsible for taking notes during the meeting and updating the document on the project repository.
+
+Points to include in the minutes would be:
+- Decisions made
+- Alternative actions/options discussed
+- Follow-up items, including agreed-on roles and responsibilities You may or may not have content for each of the points above.
