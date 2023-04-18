@@ -74,10 +74,6 @@ app.get('/login', (req, res) => {
   res.render("pages/login");
 });
 
-app.get('/home', (req, res) => {
-  res.render("pages/home");
-})
-
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
@@ -89,11 +85,11 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      console.log("correct password");
+      res.json({status: 'success', message: 'Success'});
       res.redirect('/home');
     }
     else {
-      console.log("wrong password")
+      res.json({status: 'success', message: 'Invalid input'});
     }
   })
   .catch(err => {
@@ -108,24 +104,33 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   const hash = await bcrypt.hash(req.body.password, 10);
   const username = await req.body.username;
-  console.log(hash);
 
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   db.any(query, [username, hash])
   .then(function (data) {
-      console.log(username, hash);
-      res.render("pages/login");
+      res.json({status: 'success', message: 'Success'});
   })
   .catch(function (err) {
-      return console.log(err);
+      res.json({status: 'success', message: 'Invalid input'});
   });
 });
 
+app.post('/userID', async (req, res) => {
+  const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
+  db.one(query)
+  .then(async user => {
+    const userID = await user.userid;
+    res.json({userID: userID, status: 'success', message: 'Success'})
+  })
+  .catch(err => {
+    res.json({status: 'success', message: 'Invalid username'});
+  })
+});
 
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');

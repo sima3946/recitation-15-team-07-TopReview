@@ -24,5 +24,58 @@ describe('Server!', () => {
   });
 
   // ===========================================================================
-  // TO-DO: Part A Login unit test case
+
+  it('positive : /register', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'John Doe', password: '1234'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Success');
+        done();
+      });
+  });
+
+  // ===========================================================================
+
+  it('Negative : /login. Checking invalid password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'John Doe', password: '4321'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Invalid input');
+        done();
+      });
+  });
+
+  // ===========================================================================
+
+  it('positive : /userID', done => {
+    chai
+      .request(server)
+      .post('/userID')
+      .send({username: 'John Doe'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Success');
+        done();
+      });
+  });
+
+  // ===========================================================================
+
+  it('Negative : /userID. Checking invalid username', done => {
+    chai
+      .request(server)
+      .post('/userID')
+      .send({username: 'John'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Invalid username');
+        done();
+      });
+  });
 });
