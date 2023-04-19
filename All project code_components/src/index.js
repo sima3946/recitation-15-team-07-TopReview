@@ -67,7 +67,7 @@ app.get('/welcome', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.render("pages/login");
 });
 
 app.get('/login', (req, res) => {
@@ -89,14 +89,16 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      res.json({status: 'success', message: 'Success'});
-      res.redirect('/home');
+      res.render('/home', {status: 'success', message: 'Success'});
     }
     else {
       res.json({status: 'success', message: 'Invalid input'});
     }
   })
   .catch(err => {
+    if (err.code == 0) {
+      res.render("pages/login");
+    }
     return console.log(err);
   });
 });
@@ -108,17 +110,17 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   const hash = await bcrypt.hash(req.body.password, 10);
   const username = await req.body.username;
-});
-
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   db.any(query, [username, hash])
-  .then(function (data) {
-      res.json({status: 'success', message: 'Success'});
+  .then(data => {
+      console.log(data);
+      res.render("pages/login", {status: 'success', message: 'Success'});
   })
-  .catch(function (err) {
-      res.json({status: 'success', message: 'Invalid input'});
+  .catch(err => {
+      res.render("pages/register", {status: 'success', message: 'Invalid input'});
   });
-});
+})
+
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
@@ -138,5 +140,6 @@ app.post('/userID', async (req, res) => {
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-module.exports = app.listen(3000);
+// module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
