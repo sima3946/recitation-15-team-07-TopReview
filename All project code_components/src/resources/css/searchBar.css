@@ -1,0 +1,42 @@
+/***********************************************************
+Search Bar Style Guide (Not in Use; need to figure this out)
+************************************************************/
+
+.search {
+    overflow: hidden;
+}
+
+.search input[type=text] {
+    float: right;
+    padding: 6px;
+    margin: 8px 16px 8px 20px;
+    border: medium solid rgba(9, 25, 52, 1);
+    font-size: 15px;
+    color: black;
+}
+
+.search .search-container {
+    float: right;
+}
+
+.search .search-container button {
+    float: right;
+    padding: 8px 10px;
+    margin: 10px 0px 5px 0px;
+    background: rgba(9, 25, 52, 1);
+    color: aliceblue;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.search .search-container button:hover {
+    background: rgba(37, 116, 252, 0.364);
+}
+
+.search a {
+    color: aliceblue;
+    margin: 8px 0px 8px 680px;
+    text-decoration: underline;
+    font-size: 40px;
+}
