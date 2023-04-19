@@ -142,7 +142,7 @@ app.get('/movies', async (req, res) => {
     
     // Loop through all pages of popular movies
     while (page <= total_pages) {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=${page}`);
+      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${'32e03fbc1ac17bae20d12c4548e26ce8'}&page=${page}`);
       const data = await response.json();
       
       // Insert movies into MySQL database
