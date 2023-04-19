@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="test2.css">
 
     <style>
+        /* Unique Background style guide area */
         .gradient-custom {
             /* fallback for old browsers */
             background: #6a11cb;
@@ -38,6 +39,7 @@
             background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
         }
 
+        /* Footer style guide area */
         .footer {
             position: sticky;
             width: 100%;
@@ -60,6 +62,46 @@
             text-align: center;
             align-self: center;
             justify-content: center;
+        }
+
+        /* Search bar style guide area */
+        .search {
+            overflow: hidden;
+        }
+
+        .search input[type=text] {
+            float: right;
+            padding: 6px;
+            margin: 8px 16px 8px 20px;
+            border: medium solid rgba(9, 25, 52, 1);
+            font-size: 15px;
+            color: black;
+        }
+
+        .search .search-container {
+            float: right;
+        }
+
+        .search .search-container button {
+            float: right;
+            padding: 8px 10px;
+            margin: 10px 0px 5px 0px;
+            background: rgba(9, 25, 52, 1);
+            color: aliceblue;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search .search-container button:hover {
+            background: rgba(37, 116, 252, 0.364);
+        }
+
+        .search a {
+            color: aliceblue;
+            margin: 8px 0px 8px 680px;
+            text-decoration: underline;
+            font-size: 40px;
         }
     </style>
 </head>
