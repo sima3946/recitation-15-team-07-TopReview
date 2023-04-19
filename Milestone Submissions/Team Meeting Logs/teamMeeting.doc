@@ -44,6 +44,8 @@ Attendees:
 Date&Time: 4/15: 2:00-3:00 pm 
 
 Agenda:
+    Group conflicts: 
+        Resolution + what are our next steps
     Finalize plans of who is working on what
         Specifically back-end vs front-end + possible redistribution of some roles
     API calls check in 
@@ -67,10 +69,60 @@ Agenda:
 
 
 Notes:
-    
+    Update the project board for what needs to be done for the backend
+        Most likely will also need to do this for front-end as well
+        Ensure that the buttons for login page redirect to the correct place
+    Alex + Tyler continue on registration and login
+    Home page:
+        APIs needed:
+            OMDb/TMDb API calls (with posting the top 5 popular from each? This is in the ice box)
+            Gunhi will be taking care of getting the movies into the cards (the API call that will be doing that, however if needed, will also help with it!)
+        Search bar will need to be saved into the database (the input)
+            Save the search history, but how much of that will actually be saved will have to be configured later
+    Get all API calls and populate the database with the movies
+        Limited to getting 1k a day for the API calls 
+    Movies searched for that cannot be found, which means this is an edge case that needs to be handled 
+        A way to look through the movies and not search for them?
+        Randomly display 5 movies for the cards instead of recently viewed 
+        Message: “could not find the movie”
+    Search bar action is still trying to be found (may need to go to a different page – or inline API)
+    Need to make more TODOs and then redistribute them
+        This covers all of the backend stuff as well
+    APIs
+        OMDB API KEY: 239f295a
+        Need one to have ChatGPT summarize the movie reviews
+        Need to get the movies
+        API key generated: whose and where do we need to put that
+        Need to give sentimental value to the reviews
+        login/register API calls 
+        This includes the user database
+    Committing everything:
+        Sira will update everyone on how many commits each person has
+        Pull requests when merging the main branch with the branch
+        Just another note: each user story needs to be on its own branch!!
+        Make sure to link the issue with the branch
+    URL: localhost:3000
+    Movies offered instead of recently reviewed
+        This can be done later if we have time
+    Kira will redo the project board
+    As of right now, all front-end pages exist 
+        Review Page is currently on the back burner and needs the API to be done so that we can do
 
 Outcomes:
     Key decisions:
-        
+        Tyler: testing
+        Sira/Kira: finishing up the sidebar and search bar
+            FOOTER IS DONE
+            Kira can do home page/review page API calls
+            Sidebar: login, logout, profile, settings, home
+        Alex: sentiment API
+        Gunhi + Brandon: API call that populates the movie database
+            Only doing two
+            https://developer.nytimes.com/docs/movie-reviews-api/1/overview 
+        Review Page is currently on the back burner and needs the API to be done so that we can do
+        Movies offered instead of recently reviewed
+            This can be done later if we have time
+            Randomly display five movies for the cards instead of recently viewed
+        Just another note: each user story needs to be on its own branch!!    
     Actions:
         

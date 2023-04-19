@@ -32,3 +32,42 @@ Notes:
     PROJECT GOALS FOR NEXT WEEK:
         All front-end is to be done by the next meeting
         APIs are not promised, HOWEVER WE HAVE TO WORK ON THEM 
+
+Meeting #2
+Date: 04/12/2023
+Time: 11:15 - 11:30 AM
+Attendees: Siranush, Kira, Gunhi, Tyler, Alex(Came in for a couple seconds)
+
+Notes:
+
+    Update project board, 
+        epics: need to be the compenents of the webpage (navigation bar is an epic) 
+        user acceptance: need to put it in discription 
+        criteria: need to have a criteria for acceptance
+
+    Release Notes:
+        Week One release notes completed 4/19/2023 
+            All deliverables are to be presented to the TA in each meeting 
+
+    Scribe:
+        Names, number of commits, which commit is the most significant
+
+        Kira, footer 
+
+        Sira, navigation bar
+
+        Tyler, backend and test cases (lab work is not the same as project work)
+
+        Gunhi, movie APIs
+
+        Brandon, had issues with the APIs calls because he couldnt get the reviews 
+
+    Individual Contribution:
+        How well do you communicate with everyone in the team?
+        How often do you update the project board?
+            This is changing the status of what you are working on within the project board
+        How well are you documenting your code?
+
+    PROJECT GOALS FOR NEXT WEEK:
+        All back-end is to be done by the next Meeting
+        Figure out the next API to use

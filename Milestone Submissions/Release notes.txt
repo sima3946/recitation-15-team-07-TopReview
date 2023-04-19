@@ -1,4 +1,21 @@
 A list of updates you have made since the last meeting.
-Here is are some links that help you write release notes:
+Here are some links that help you write release notes:
  - Automated Release Notes: https: //docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
  - Manually created Release Notes: https://simonwillison.net/2022/Jan/31/release-notes/
+
+Week One Release Notes:
+
+WEEK ONE REPORT
+| Team Member | Number of Commits |
+| — |— |
+| Gunhi Kim | 5 |
+| Tyler Kloster | 4 |
+| Brandon Lehman | x |
+| Siranush Mazmandyan | 9 |
+| Alex Pham | 2 |
+| Kira Velez | 7 |
+
+Front-end for login and registration are finished. For the home page, there is a front-end for the navigations bars as well as the footer and search bar, 
+however due to some reassessments, settings as well as the profile page for the side navigation bar have been put on hold. The review page is being worked on
+by Gunhi, as well the back-end is currently the focus of it. With all of this, we are roughly 1/4 of the way through the entire project and now hope to 
+pick up the pace in order to finish on time. 

@@ -74,6 +74,10 @@ app.get('/login', (req, res) => {
   res.render("pages/login");
 });
 
+app.get('/home', (req, res) => {
+  res.render("pages/home");
+});
+
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
@@ -104,6 +108,7 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   const hash = await bcrypt.hash(req.body.password, 10);
   const username = await req.body.username;
+});
 
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   db.any(query, [username, hash])
@@ -126,6 +131,7 @@ app.post('/userID', async (req, res) => {
     res.json({status: 'success', message: 'Invalid username'});
   })
 });
+
 
 
 // *****************************************************
