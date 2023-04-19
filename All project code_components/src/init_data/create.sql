@@ -9,8 +9,9 @@ CREATE TABLE Movies (
 );
 
 CREATE TABLE MovieReviews (
-  review_id INT PRIMARY KEY,
+  review_id INT AUTO_INCREMENT PRIMARY KEY,
   movie_id INT,
   review TEXT,
-  FOREIGN KEY (movie_id) REFERENCES Movies(id)
+  FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
+

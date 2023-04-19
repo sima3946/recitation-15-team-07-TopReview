@@ -8,6 +8,8 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
+const mysql = require('mysql');
+const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -120,6 +122,89 @@ app.post('/register', async (req, res) => {
       return console.log(err);
   });
 });
+
+
+
+// MySQL database configuration
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'your_mysql_username',
+  password: 'your_mysql_password',
+  database: 'your_database_name'
+});
+
+// GET Endpoint for retrieving movies from the TMDb API
+app.get('/movies', async (req, res) => {
+  try {
+    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8'; //Gunhi's tmdb API key
+    let page = 1;
+    let total_pages = 1;
+    
+    // Loop through all pages of popular movies
+    while (page <= total_pages) {
+      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=${page}`);
+      const data = await response.json();
+      
+      // Insert movies into MySQL database
+      data.results.forEach(movie => {
+        const { id, title } = movie;
+        const sql = `INSERT INTO Movies (movie_id, name) VALUES (?, ?);`;
+        connection.query(sql, [id, title], (error, results) => {
+          if (error) throw error;
+        });
+      });
+      
+      // Update page and total_pages variables
+      page++;
+      total_pages = data.total_pages;
+    }
+    
+    res.send('Movies inserted into database successfully!');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error inserting movies into database');
+  }
+});
+
+/* GET Endpoint for retrieving REVIEWS for movies from the TMDb API
+          and inserting them into the MovieReviews table */
+app.get('/reviews', async (req, res) => {
+  try {
+    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8';
+    const movies = await connection.query('SELECT movie_id FROM Movies');
+    
+    // Loop through each movie in the database
+    for (const movie of movies) {
+      const movie_id = movie.movie_id;
+      const response = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/reviews?api_key=${'32e03fbc1ac17bae20d12c4548e26ce8'}`);
+      const data = await response.json();
+      
+      // Insert movie reviews into MySQL database
+      data.results.forEach(review => {
+        const { id, content } = review;
+        const sql = `INSERT INTO MovieReviews (movie_id, review) VALUES (?, ?);`;
+        connection.query(sql, [movie_id, content], (error, results) => {
+          if (error) throw error;
+        });
+      });
+    }
+    
+    res.send('Movie reviews inserted into database successfully!');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error inserting movie reviews into database');
+  }
+});
+
+
+
+
+
+
+
+
+
+
 
 
 
