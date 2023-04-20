@@ -222,6 +222,14 @@ app.get('/reviews', async (req, res) => {
           
 
 
+app.get('scores', async(req, res) => {
+  try{
+    const api_key = 'AIzaSyDEZsryk_nGwEYS2vTmKbu-MmyMHuSFcBo'
+  } catch(error) {
+    console.error(error);
+    res.status(500).send('Error giving reviews sentiment score');
+  }
+});
 
 
 
