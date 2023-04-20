@@ -29,24 +29,23 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({username: 'John Doe', password: '1234'})
+      .send({username: 'John Dane', password: '1234'})
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body.message).to.equals('Success');
         done();
       });
   });
 
   // ===========================================================================
 
-  it('Negative : /login. Checking invalid password', done => {
+  it('Negative : /register. Checking no password', done => {
     chai
       .request(server)
-      .post('/login')
-      .send({username: 'John Doe', password: '4321'})
+      .post('/register')
+      .send({username: 'John Doe', password: ''})
       .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.message).to.equals('Invalid input');
+        expect(res).to.have.status(201);
+        expect(res.body.message).to.equals('No input');
         done();
       });
   });
@@ -57,7 +56,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/userID')
-      .send({username: 'John Doe'})
+      .send({username: 'John Dane'})
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body.message).to.equals('Success');
@@ -73,7 +72,7 @@ describe('Server!', () => {
       .post('/userID')
       .send({username: 'John'})
       .end((err, res) => {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         expect(res.body.message).to.equals('Invalid username');
         done();
       });

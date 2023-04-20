@@ -89,10 +89,10 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      res.render('/home', {status: 'success', message: 'Success'});
+      res.render('pages/home', {status: 200, message: 'Success'});
     }
     else {
-      res.json({status: 'success', message: 'Invalid input'});
+      res.status(201).json({message: 'Invalid input'});
     }
   })
   .catch(err => {
@@ -108,17 +108,28 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+  if (req.body.password == '') {
+    password = null;
+  }
   const hash = await bcrypt.hash(req.body.password, 10);
   const username = await req.body.username;
   const query = "INSERT INTO users (username, password) values ($1, $2);"
-  db.any(query, [username, hash])
-  .then(data => {
-      console.log(data);
-      res.render("pages/login", {status: 'success', message: 'Success'});
-  })
-  .catch(err => {
-      res.render("pages/register", {status: 'success', message: 'Invalid input'});
-  });
+  if (req.body.password == '') {
+    res.status(201).json({message: 'No input'})
+    return
+  }
+  else {
+    db.any(query, [username, hash])
+    .then(async data => {
+      res.render('pages/login', {status: 200, message: 'Success'});
+      return
+    })
+    .catch(err => {
+      res.render('pages/register', {status: 201, message: 'Username taken'});
+      return
+    });
+  }
+  
 })
 
 
@@ -127,10 +138,12 @@ app.post('/userID', async (req, res) => {
   db.one(query)
   .then(async user => {
     const userID = await user.userid;
-    res.json({userID: userID, status: 'success', message: 'Success'})
+    res.status(200);
+    res.json({userID: userID, message: 'Success'})
   })
   .catch(err => {
-    res.json({status: 'success', message: 'Invalid username'});
+    res.status(201);
+    res.json({message: 'Invalid username'});
   })
 });
 
@@ -140,6 +153,6 @@ app.post('/userID', async (req, res) => {
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-module.exports = app.listen(3000);
-// app.listen(3000);
+// module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
