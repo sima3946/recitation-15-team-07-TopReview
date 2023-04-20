@@ -153,29 +153,32 @@ app.post('/userID', async (req, res) => {
 // GET Endpoint for retrieving movies from the TMDb API
 app.get('/movies', async (req, res) => {
   try {
-    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8'; //Gunhi's tmdb API key
+    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
     let page = 1;
     let total_pages = 1;
-    
-    // Loop through all pages of popular movies
+
     while (page <= total_pages) {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${'32e03fbc1ac17bae20d12c4548e26ce8'}&page=${page}`);
+      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=${page}`);
       const data = await response.json();
-      
-      // Insert movies into MySQL database
-      data.results.forEach(movie => {
-        const { id, title } = movie;
-        const sql = `INSERT INTO Movies (movie_id, name) VALUES (?, ?);`;
-        connection.query(sql, [id, title], (error, results) => {
-          if (error) throw error;
-        });
+      const movies = data.results.map(movie => {
+        return {
+          id: movie.id,
+          title: movie.title,
+          description: movie.overview,
+          image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+        };
       });
-      
-      // Update page and total_pages variables
+
+      const sql = 'INSERT INTO Movies (movie_id, name, description, image_url) VALUES ?';
+      const values = movies.map(movie => [movie.id, movie.title, movie.description, movie.image_url]);
+      connection.query(sql, [values], (error, results) => {
+        if (error) throw error;
+      });
+
       page++;
       total_pages = data.total_pages;
     }
-    
+
     res.send('Movies inserted into database successfully!');
   } catch (error) {
     console.error(error);
@@ -183,35 +186,40 @@ app.get('/movies', async (req, res) => {
   }
 });
 
+
 /* GET Endpoint for retrieving REVIEWS for movies from the TMDb API
           and inserting them into the MovieReviews table */
 app.get('/reviews', async (req, res) => {
   try {
     const api_key = '32e03fbc1ac17bae20d12c4548e26ce8';
     const movies = await connection.query('SELECT movie_id FROM Movies');
-    
-    // Loop through each movie in the database
+
     for (const movie of movies) {
       const movie_id = movie.movie_id;
-      const response = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/reviews?api_key=${'32e03fbc1ac17bae20d12c4548e26ce8'}`);
+      const response = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/reviews?api_key=${api_key}`);
       const data = await response.json();
-      
-      // Insert movie reviews into MySQL database
-      data.results.forEach(review => {
-        const { id, content } = review;
-        const sql = `INSERT INTO MovieReviews (movie_id, review) VALUES (?, ?);`;
-        connection.query(sql, [movie_id, content], (error, results) => {
-          if (error) throw error;
-        });
+      const reviews = data.results.map(review => {
+        return {
+          movie_id: movie_id,
+          review: review.content,
+          sentimentScore: -2
+        };
+      });
+
+      const sql = 'INSERT INTO MovieReviews (movie_id, review, sentimentScore) VALUES ?';
+      const values = reviews.map(review => [review.movie_id, review.review, review.sentimentScore]);
+      connection.query(sql, [values], (error, results) => {
+        if (error) throw error;
       });
     }
-    
+
     res.send('Movie reviews inserted into database successfully!');
   } catch (error) {
     console.error(error);
     res.status(500).send('Error inserting movie reviews into database');
   }
 });
+          
 
 
 
