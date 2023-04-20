@@ -150,15 +150,6 @@ app.post('/userID', async (req, res) => {
 });
 
 
-
-// MySQL database configuration
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'your_mysql_username',
-  password: 'your_mysql_password',
-  database: 'your_database_name'
-});
-
 // GET Endpoint for retrieving movies from the TMDb API
 app.get('/movies', async (req, res) => {
   try {
