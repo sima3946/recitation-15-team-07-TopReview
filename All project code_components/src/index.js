@@ -69,7 +69,7 @@ app.get('/welcome', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.render("pages/login");
 });
 
 app.get('/login', (req, res) => {
@@ -78,7 +78,7 @@ app.get('/login', (req, res) => {
 
 app.get('/home', (req, res) => {
   res.render("pages/home");
-})
+});
 
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
@@ -91,14 +91,16 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      console.log("correct password");
-      res.redirect('/home');
+      res.render('pages/home', {status: 200, message: 'Success'});
     }
     else {
-      console.log("wrong password")
+      res.status(201).json({message: 'Invalid input'});
     }
   })
   .catch(err => {
+    if (err.code == 0) {
+      res.render("pages/login");
+    }
     return console.log(err);
   });
 });
@@ -108,19 +110,43 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+  if (req.body.password == '') {
+    password = null;
+  }
   const hash = await bcrypt.hash(req.body.password, 10);
   const username = await req.body.username;
-  console.log(hash);
-
   const query = "INSERT INTO users (username, password) values ($1, $2);"
-  db.any(query, [username, hash])
-  .then(function (data) {
-      console.log(username, hash);
-      res.render("pages/login");
+  if (req.body.password == '') {
+    res.status(201).json({message: 'No input'})
+    return
+  }
+  else {
+    db.any(query, [username, hash])
+    .then(async data => {
+      res.render('pages/login', {status: 200, message: 'Success'});
+      return
+    })
+    .catch(err => {
+      res.render('pages/register', {status: 201, message: 'Username taken'});
+      return
+    });
+  }
+  
+})
+
+
+app.post('/userID', async (req, res) => {
+  const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
+  db.one(query)
+  .then(async user => {
+    const userID = await user.userid;
+    res.status(200);
+    res.json({userID: userID, message: 'Success'})
   })
-  .catch(function (err) {
-      return console.log(err);
-  });
+  .catch(err => {
+    res.status(201);
+    res.json({message: 'Invalid username'});
+  })
 });
 
 
@@ -212,5 +238,6 @@ app.get('/reviews', async (req, res) => {
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
+// module.exports = app.listen(3000);
 app.listen(3000);
 console.log('Server is listening on port 3000');

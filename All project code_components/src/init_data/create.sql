@@ -1,6 +1,8 @@
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE IF NOT EXISTS users (
+    userID SERIAL,
     username VARCHAR(50) PRIMARY KEY,
     password CHAR(60) NOT NULL
+
     );
 
 CREATE TABLE Movies (
@@ -14,4 +16,3 @@ CREATE TABLE MovieReviews (
   review TEXT,
   FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
-
