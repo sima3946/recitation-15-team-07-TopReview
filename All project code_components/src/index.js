@@ -80,6 +80,13 @@ app.get('/home', (req, res) => {
   res.render("pages/home");
 });
 
+app.get('/profile', (req, res) => {
+  res.render("pages/profile", {
+    username: req.session.user.username,
+    password: req.session.user.password,
+  });
+});
+
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)

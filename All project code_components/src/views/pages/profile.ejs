@@ -1,0 +1,24 @@
+<%- include ('../partials/header') %>
+    <main>
+        <!-- Search Bar content -->
+        <div class="gradient-custom search">
+            <h1 style="color: rgb(70, 32, 32); text-align: center">Welcome User: <%= username %> </h1>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Username</th>
+                    <td><%= username %></td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td><%= password %></td>
+                </tr>
+            </table>
+        </div>
+
+        <%- include ('../partials/navigationBar') %>
+
+        <div class="container text-center" id="movies">
+            <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+        </div>
+    </main>
+<%- include ('../partials/footer') %>
