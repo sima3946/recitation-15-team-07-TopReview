@@ -149,6 +149,18 @@ app.post('/userID', async (req, res) => {
   })
 });
 
+//home page + movie cards GET route
+app.get('/', (req, res) => {
+  const query = 'SELECT * FROM Movies ORDER BY RAND() LIMIT 5';
+  connection.query(query, (err, results) => {
+    if (err) {
+      throw err;
+    }
+    const movies = results;
+    res.render('home', { movies: movies });
+  });
+});
+
 
 // GET Endpoint for retrieving movies from the TMDb API
 app.get('/movies', async (req, res) => {
