@@ -8,7 +8,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const mysql = require('mysql');
+//const mysql = require('mysql'); //I'm not sure what this is supposed to be doing b/c we run into errors here when we compose docker !!!
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 // *****************************************************
@@ -78,6 +78,13 @@ app.get('/login', (req, res) => {
 
 app.get('/home', (req, res) => {
   res.render("pages/home");
+});
+
+app.get('/profile', (req, res) => {
+  res.render("pages/profile", {
+    username: req.session.user.username,
+    password: req.session.user.password,
+  });
 });
 
 app.post('/login', async (req, res) => {
@@ -224,15 +231,35 @@ app.get('/reviews', async (req, res) => {
 
 app.get('scores', async(req, res) => {
   try{
-    const api_key = 'AIzaSyDEZsryk_nGwEYS2vTmKbu-MmyMHuSFcBo'
-    const movies = await connection.query('SELECT movie_id FROM Movies');
+    
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute('SELECT id, reviews FROM movies');
+  
+    // Loop through the movies and their reviews, and make an API call for each review
+    for (const row of rows) {
+      const movieId = row.id;
+      const reviews = JSON.parse(row.reviews);
+  
+      for (const review of reviews) {
+        const reviewText = review.text;
+        const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
+  
+        try {
+          const response = await axios.get(apiUrl);
+          const sentiment = response.data.sentiment;
+          console.log(`Sentiment analysis result for review '${reviewText}' in movie ${movieId}: ${sentiment}`);
+          // Update the review in the database with the sentiment analysis result
+          await connection.execute('UPDATE movies SET reviews = JSON_SET(reviews, CONCAT("$[", JSON_SEARCH(reviews, "one", ?), "].sentiment"), ?) WHERE id = ?', [reviewText, sentiment, movieId]);
+        } catch (error) {
+          console.error(`Error analyzing sentiment for review '${reviewText}' in movie ${movieId}: ${error}`);
+        }
+      }
+    }
   } catch(error) {
     console.error(error);
     res.status(500).send('Error giving reviews sentiment score');
   }
 });
-
-
 
 
 

@@ -40,7 +40,7 @@ Outcomes:
 
 Second meeting:
 Project: TopReview
-Attendees: 
+Attendees: Siranush, Kira, Tyler, Alex, Gunhi, Brandon
 Date&Time: 4/15: 2:00-3:00 pm 
 
 Agenda:
@@ -125,4 +125,83 @@ Outcomes:
             Randomly display five movies for the cards instead of recently viewed
         Just another note: each user story needs to be on its own branch!!    
     Actions:
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Third meeting:
+Project: TopReview
+Attendees: Kira, Siranush
+Date&Time: 4/15: 2:00-3:45 pm 
+
+Agenda:
+    Main discussion topic: getting ready for week one 
+        Review of the homepage, databases, and review page.
+            The functionality of the Homepage and Review page.
+            What have we worked on
+            Is the Google sentiment analysis working?
+            How do the reviews for TMBD look at the moment?
+    Who will be the scribe for next week 
+
+
+
+Notes:
+    Key information so that we can review it later.
+        Looking at the APIs for the review sites we are working on
+            Letterbox review site is being looked at
+            Are we doing a third review website?
+    When you finish a branch for a particular issue, you can delete that branch. Your commits will already be merged. (If you merged properly).
+    Drafted an email to the TA about missing members
+
+
+Outcomes:
+    Key decisions:
+        Gunhi is working on Letterbox now; TMBD is done.
+        Kira/Sira will be working on ChaptGPT
+        Sira is working on the Profile page
+   
+    Actions:
+        What will people be working on throughout the week?
+        NEED TO DO: confirm branches work + how many review sites we’re using
+        Gunhi is working on Letterbox now; TMBD is done.
+        Alex is working on Google sentiment analysis 
+        Kira/Sira will be working on ChaptGPT
+        Sira is working on the Profile page
+        What is Tyler working on?
+            Could be a tester or working to make sure all the merges work
+        Back-up meeting MONDAY
+        In-person or over Zoom
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Third meeting (backup):
+Project: TopReview
+Attendees: Kira, Siranush
+Date&Time: 4/24: 11:15-11:38 AM 
+
+Agenda:
+    Main discussion topic: getting ready for week one 
+        Review of the homepage, databases, and review page.
+            The functionality of the Homepage and Review page.
+            What have we worked on
+            Is the Google sentiment analysis working?
+            How do the reviews for TMBD look at the moment?
+    Who will be the scribe for next week 
+
+
+
+Notes:
+    Testing conflicts with docker
+    Who is doing what?
+        Tyler will be fixing main once more
+        Sira is done with the profile page
+        Kira/Sira/Tyler working on ChatGPT API calls
+    Checkin with Gunhi and the home page
+
+
+Outcomes:
+    Key decisions:
+        Kira/Sira/Tyler working on ChatGPT API calls
+   
+    Actions:
+
         
