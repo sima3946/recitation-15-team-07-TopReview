@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt'); //  To hash passwords
 //const mysql = require('mysql'); //I'm not sure what this is supposed to be doing b/c we run into errors here when we compose docker !!!
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -227,7 +228,22 @@ app.get('/reviews', async (req, res) => {
   }
 });
           
-
+app.get('/search', async(req, res) =>{
+  try{
+    const movie = req.body.search || '';
+    const query = "SELECT (Movies.name) FROM Movies WHERE Movies.name = $1";
+    if (movie.trim().length > 0) {
+      res.send('Movie successfully found!');
+    }
+  } catch(error){
+    res.status(400).json({
+      error: {
+        message: "Please enter a valid movie name",
+      }
+    });
+    return;
+  }
+});
 
 
 
