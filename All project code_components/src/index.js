@@ -262,7 +262,47 @@ app.get('scores', async(req, res) => {
 });
 
 
+async function sortReviewsBySentiment() {
+  // Connect to the database and retrieve the reviews
+  const connection = await mysql.createConnection(dbConfig);
+  const [rows] = await connection.execute('SELECT sentiment_score FROM reviews');
 
+  // Loop through the reviews and group them into bad, medium, and good categories based on their sentiment score
+  const badReviews = [];
+  const mediumReviews = [];
+  const goodReviews = [];
+
+  for (const row of rows) {
+    const sentimentScore = row.sentiment_score;
+
+    if (sentimentScore === null || sentimentScore === undefined) {
+      continue;
+    }
+
+    if (sentimentScore < -0.33) {
+      badReviews.push(row);
+    } else if (sentimentScore >= -0.33 && sentimentScore <= 0.33) {
+      mediumReviews.push(row);
+    } else {
+      goodReviews.push(row);
+    }
+  }
+
+  // Print the results
+  console.log(`Bad reviews (${badReviews.length}):`);
+  console.log(badReviews.map(review => review.id));
+
+  console.log(`Medium reviews (${mediumReviews.length}):`);
+  console.log(mediumReviews.map(review => review.id));
+
+  console.log(`Good reviews (${goodReviews.length}):`);
+  console.log(goodReviews.map(review => review.id));
+
+  // Close the database connection
+  await connection.end();
+}
+
+sortReviewsBySentiment();
 
 
 
