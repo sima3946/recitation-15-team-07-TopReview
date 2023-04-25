@@ -1,0 +1,15 @@
+1. Test to see when the user inputs a username and password to the register page, it hashs the password and stores it
+Test to see if you can then log in with this account
+Test on both the register and login page that if you don't fill a field, you wont move on
+Test to see if your username is already taken you cant register using that name
+Test to see if login is case sensitive
+
+2. Test to see if all the movies pages are accessable and show the appropriate reviews.
+Go to all the given websites and see if the scores match up and the review compilations seem appropriate
+All information in the table gets portraid on the page correctly
+
+3. Test to see if you can add movies to your watched and favorite lists. 
+Make sure that after leaving the site and coming back, these lists are maintained.
+Also make sure that both adding and removing movies works.
+Your favorite movies on the home page should be the same as the list in your profile if it is implemented on the home page.
+All routes from both the movie pages and the profile page should either add or delete appropriatly.
