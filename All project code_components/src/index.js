@@ -66,7 +66,7 @@ app.use(
 // All API routes go here
 
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 app.get('/', (req, res) => {
@@ -91,26 +91,26 @@ app.get('/profile', (req, res) => {
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
-  .then(async user => {
-    const match = await bcrypt.compare(req.body.password, user.password)
-    if (req.body.password == '' || req.body.password == 'undefined') {
-      console.log("no password");
-    }
-    else if (match) {
-      req.session.user = user;
-      req.session.save();
-      res.render('pages/home', {status: 200, message: 'Success'});
-    }
-    else {
-      res.status(201).json({message: 'Invalid input'});
-    }
-  })
-  .catch(err => {
-    if (err.code == 0) {
-      res.render("pages/login");
-    }
-    return console.log(err);
-  });
+    .then(async user => {
+      const match = await bcrypt.compare(req.body.password, user.password)
+      if (req.body.password == '' || req.body.password == 'undefined') {
+        console.log("no password");
+      }
+      else if (match) {
+        req.session.user = user;
+        req.session.save();
+        res.render('pages/home', { status: 200, message: 'Success' });
+      }
+      else {
+        res.status(201).json({ message: 'Invalid input' });
+      }
+    })
+    .catch(err => {
+      if (err.code == 0) {
+        res.render("pages/login");
+      }
+      return console.log(err);
+    });
 });
 
 app.get('/register', (req, res) => {
@@ -125,36 +125,36 @@ app.post('/register', async (req, res) => {
   const username = await req.body.username;
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   if (req.body.password == '') {
-    res.status(201).json({message: 'No input'})
+    res.status(201).json({ message: 'No input' })
     return
   }
   else {
     db.any(query, [username, hash])
-    .then(async data => {
-      res.render('pages/login', {status: 200, message: 'Success'});
-      return
-    })
-    .catch(err => {
-      res.render('pages/register', {status: 201, message: 'Username taken'});
-      return
-    });
+      .then(async data => {
+        res.render('pages/login', { status: 200, message: 'Success' });
+        return
+      })
+      .catch(err => {
+        res.render('pages/register', { status: 201, message: 'Username taken' });
+        return
+      });
   }
-  
+
 })
 
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
   db.one(query)
-  .then(async user => {
-    const userID = await user.userid;
-    res.status(200);
-    res.json({userID: userID, message: 'Success'})
-  })
-  .catch(err => {
-    res.status(201);
-    res.json({message: 'Invalid username'});
-  })
+    .then(async user => {
+      const userID = await user.userid;
+      res.status(200);
+      res.json({ userID: userID, message: 'Success' })
+    })
+    .catch(err => {
+      res.status(201);
+      res.json({ message: 'Invalid username' });
+    })
 });
 
 
@@ -227,10 +227,10 @@ app.get('/reviews', async (req, res) => {
     res.status(500).send('Error inserting movie reviews into database');
   }
 });
-  
+
 //supposed to have the search bar render the page of the movie that is being searched -- Siranush 
-app.get('/search', async(req, res) =>{
-  try{
+app.get('/search', async (req, res) => {
+  try {
     //const movie = req.body.search || '';
     const query = "SELECT (Movies.movie_id) FROM Movies WHERE Movies.name = $1";
     let movieLook = await db.any(query, [req.body.search]); //should be able to find the movie that is being searched for
@@ -238,7 +238,7 @@ app.get('/search', async(req, res) =>{
     // if (movie.trim().length > 0) {
     //   res.send('Movie successfully found!');
     // }
-  } catch(error){
+  } catch (error) {
     res.status(400).json({
       error: {
         message: "Please enter a valid movie name",
@@ -250,37 +250,51 @@ app.get('/search', async(req, res) =>{
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.render('pages/login', {message: 'Logged out Successfully'});
+  res.render('pages/login', { message: 'Logged out Successfully' });
 });
 
 
+import { render } from "ejs";
 /**** CHAT TESING ****/
+import { useState } from "react";
+
+export default function Home() {
+  const [animalInput, setAnimalInput] = useState("");
+  const [result, setResult] = useState();
+
+  async function onSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ animal: animalInput }),
+      });
+
+      const data = await response.json();
+      if (response.status !== 200) {
+        throw data.error || new Error(`Request failed with status ${response.status}`);
+      }
+
+      setResult(data.result);
+      setAnimalInput("");
+    } catch (error) {
+      // Consider implementing your own error handling logic here
+      console.error(error);
+      alert(error.message);
+    }
+  }
+  res.render('pages/reviews')
+}
 
 
-// function generatePrompt(movie) {
-//   const capitalizedMovie = Movies.name[0].toUpperCase() + Movies.name.slice(1).toLowerCase();
-//   const MovieReviews = MovieReviews.sentimentScore;
-//   if((${MovieReviews}) >= 70)
-//   {
-//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
-//   }
-//   else if (((${MovieReviews}) >= 30) && ((${MovieReviews}) <= 69))
-//   {
-//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
-//   }else if (((${MovieReviews}) >= 0) && ((${MovieReviews}) <= 29))
-//   {
-//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
-//   }else
-//   {
-//       return `Could not find a review for the movie: ${capitalizedMovie}`;
-//   }
-// }
 
-
-// *****************************************************
-// <!-- Section 5 : Start Server-->
-// *****************************************************
-// starting the server and keeping the connection open to listen for more requests
-// module.exports = app.listen(3000);
-app.listen(3000);
-console.log('Server is listening on port 3000');
+  // *****************************************************
+  // <!-- Section 5 : Start Server-->
+  // *****************************************************
+  // starting the server and keeping the connection open to listen for more requests
+  // module.exports = app.listen(3000);
+  app.listen(3000);
+  console.log('Server is listening on port 3000');
