@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
     userID SERIAL,
     username VARCHAR(50) PRIMARY KEY,
     password CHAR(60) NOT NULL
-
-    );
+);
 
 CREATE TABLE Movies (
   movie_id INT PRIMARY KEY,
@@ -13,7 +12,7 @@ CREATE TABLE Movies (
 );
 
 CREATE TABLE MovieReviews (
-  review_id INT AUTO_INCREMENT PRIMARY KEY,
+  review_id SERIAL PRIMARY KEY,
   movie_id INT,
   review TEXT,
   sentimentScore INT,
