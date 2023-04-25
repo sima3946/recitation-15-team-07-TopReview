@@ -227,14 +227,17 @@ app.get('/reviews', async (req, res) => {
     res.status(500).send('Error inserting movie reviews into database');
   }
 });
-          
+  
+//supposed to have the search bar render the page of the movie that is being searched -- Siranush 
 app.get('/search', async(req, res) =>{
   try{
-    const movie = req.body.search || '';
-    const query = "SELECT (Movies.name) FROM Movies WHERE Movies.name = $1";
-    if (movie.trim().length > 0) {
-      res.send('Movie successfully found!');
-    }
+    //const movie = req.body.search || '';
+    const query = "SELECT (Movies.movie_id) FROM Movies WHERE Movies.name = $1";
+    let movieLook = await db.any(query, [req.body.search]); //should be able to find the movie that is being searched for
+    res.render('pages/review', movieLook);
+    // if (movie.trim().length > 0) {
+    //   res.send('Movie successfully found!');
+    // }
   } catch(error){
     res.status(400).json({
       error: {
@@ -245,15 +248,33 @@ app.get('/search', async(req, res) =>{
   }
 });
 
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.render('pages/login', {message: 'Logged out Successfully'});
+});
 
 
+/**** CHAT TESING ****/
 
 
-
-
-
-
-
+// function generatePrompt(movie) {
+//   const capitalizedMovie = Movies.name[0].toUpperCase() + Movies.name.slice(1).toLowerCase();
+//   const MovieReviews = MovieReviews.sentimentScore;
+//   if((${MovieReviews}) >= 70)
+//   {
+//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
+//   }
+//   else if (((${MovieReviews}) >= 30) && ((${MovieReviews}) <= 69))
+//   {
+//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
+//   }else if (((${MovieReviews}) >= 0) && ((${MovieReviews}) <= 29))
+//   {
+//       return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
+//   }else
+//   {
+//       return `Could not find a review for the movie: ${capitalizedMovie}`;
+//   }
+// }
 
 
 // *****************************************************
