@@ -86,7 +86,7 @@ app.get('/home', (req, res) => {
       titles[i] = movies[i].name
       image_urls[i] = movies[i].image_url
     }
-    res.render("pages/home", {names: titles, urls: image_urls, status: 200, message: 'Success'});
+    res.render("pages/home", {names: titles, urls: image_urls});
   })
   .catch(err => {
     console.log(err);
@@ -111,7 +111,7 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      res.redirect('/home');
+      res.render('pages/home', {status: 200, message: 'Success'});
     }
     else {
       res.status(201).json({message: 'Invalid input'});
@@ -325,6 +325,7 @@ app.get('/reviewInfo', async (req, res) => {
 
 app.get('/scores', async(req, res) => {
   try{
+    
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute('SELECT id, reviews FROM movies');
   
@@ -353,6 +354,7 @@ app.get('/scores', async(req, res) => {
     res.status(500).send('Error giving reviews sentiment score');
   }
 });
+
 
 async function sortReviewsBySentiment() {
   // Connect to the database and retrieve the reviews
