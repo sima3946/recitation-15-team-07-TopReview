@@ -309,40 +309,40 @@ app.get('/search', async (req, res) => {
   }
 });
 
-import { render } from "ejs";
-/**** CHAT TESING ****/
-import { useState } from "react";
+// import { render } from "ejs";
+// /**** CHAT TESING ****/
+// import { useState } from "react";
 
-export default function Home() {
-  const [movieInput, setMovieInput] = useState("");
-  const [result, setResult] = useState();
-  //This submit event will be for when the user selects the movie card on the homepage
-  async function onSubmit(event) {
-    event.preventDefault();
-    try {
-      const response = await fetch("/resources/js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ movie: movieInput }),
-      });
+// export default function Home() {
+//   const [movieInput, setMovieInput] = useState("");
+//   const [result, setResult] = useState();
+//   //This submit event will be for when the user selects the movie card on the homepage
+//   async function onSubmit(event) {
+//     event.preventDefault();
+//     try {
+//       const response = await fetch("/resources/js", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ movie: movieInput }),
+//       });
 
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
+//       const data = await response.json();
+//       if (response.status !== 200) {
+//         throw data.error || new Error(`Request failed with status ${response.status}`);
+//       }
 
-      setResult(data.result);
-      setMovieInput("");
-    } catch (error) {
-      // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
-    }
-  }
-  res.render('pages/reviews')
-}
+//       setResult(data.result);
+//       setMovieInput("");
+//     } catch (error) {
+//       // Consider implementing your own error handling logic here
+//       console.error(error);
+//       alert(error.message);
+//     }
+//   }
+//   res.render('pages/reviews')
+// }
 
 
 
