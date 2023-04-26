@@ -177,18 +177,18 @@ app.get('/movies', async (req, res) => {
           image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         };
       });
-      
+
       const sql = 'INSERT INTO Movies (movie_id, name, description, image_url) VALUES ($1, $2, $3, $4)';
-      for(let i = 0; i < movies.length; i++) {
+      for (let i = 0; i < movies.length; i++) {
         db.any(sql, [movies[i].id, movies[i].title, movies[i].description, movies[i].image_url])
-        .then(async data => {
-          res.status(200);
-        })
-        .catch(err => {
-          console.log(err);
-        })
+          .then(async data => {
+            res.status(200);
+          })
+          .catch(err => {
+            console.log(err);
+          })
       }
-      
+
 
       page++;
       total_pages = data.total_pages;
@@ -206,12 +206,12 @@ app.get('/movies', async (req, res) => {
 app.get('/movieInfo', async (req, res) => {
   const query = `SELECT * FROM Movies`;
   db.any(query)
-  .then(async movies => {
-    console.log(movies);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      console.log(movies);
+    })
+    .catch(err => {
+      console.log(err);
+    })
 });
 
 
@@ -237,12 +237,12 @@ app.get('/reviews', async (req, res) => {
       const sql = 'INSERT INTO MovieReviews (movie_id, review, sentimentScore) VALUES ($1, $2, $3)';
       for (let i = 0; i < reviews.length; i++) {
         db.any(sql, [reviews[i].movie_id, reviews[i].review, reviews[i].sentimentScore])
-        .then(data => {
-          res.status(200);
-        })
-        .catch(err => {
-          console.log(err);
-        })
+          .then(data => {
+            res.status(200);
+          })
+          .catch(err => {
+            console.log(err);
+          })
       }
     }
 
@@ -276,12 +276,12 @@ app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
   const query2 = `SELECT * FROM MovieReviews ORDER BY movie_id ;`
   db.any(query1)
-  .then(async movies => {
-    console.log(movies);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      console.log(movies);
+    })
+    .catch(err => {
+      console.log(err);
+    })
 })
 
 app.get('/logout', (req, res) => {
@@ -309,34 +309,23 @@ app.get('/search', async (req, res) => {
   }
 });
 
-  async function onSubmit(event) {
-    event.preventDefault();
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ animal: animalInput }),
-      });
-
 import { render } from "ejs";
 /**** CHAT TESING ****/
 import { useState } from "react";
 
 export default function Home() {
-  const [animalInput, setAnimalInput] = useState("");
+  const [movieInput, setMovieInput] = useState("");
   const [result, setResult] = useState();
-
+  //This submit event will be for when the user selects the movie card on the homepage
   async function onSubmit(event) {
     event.preventDefault();
     try {
-      const response = await fetch("/api/generate", {
+      const response = await fetch("/resources/js", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ animal: animalInput }),
+        body: JSON.stringify({ movie: movieInput }),
       });
 
       const data = await response.json();
@@ -345,7 +334,7 @@ export default function Home() {
       }
 
       setResult(data.result);
-      setAnimalInput("");
+      setMovieInput("");
     } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -357,10 +346,10 @@ export default function Home() {
 
 
 
-  // *****************************************************
-  // <!-- Section 5 : Start Server-->
-  // *****************************************************
-  // starting the server and keeping the connection open to listen for more requests
-  // module.exports = app.listen(3000);
-  app.listen(3000);
-  console.log('Server is listening on port 3000');
+// *****************************************************
+// <!-- Section 5 : Start Server-->
+// *****************************************************
+// starting the server and keeping the connection open to listen for more requests
+// module.exports = app.listen(3000);
+app.listen(3000);
+console.log('Server is listening on port 3000');
