@@ -170,100 +170,145 @@ app.post('/userID', async (req, res) => {
 });
 
 
-// GET Endpoint for retrieving movies from the TMDb API
+
+
+const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
+
+// Endpoint to retrieve movies from TMDB and store them in the Movies table
 app.get('/movies', async (req, res) => {
   try {
-    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
-    let page = 1;
-    let total_pages = 1;
-    let count = 0;
+    // Make initial API call to get total number of pages
+    const initialResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=1`);
+    const totalPages = initialResponse.data.total_pages;
+    const moviesPerPage = initialResponse.data.results.length;
 
-    while (page <= total_pages && (count < 1)) {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=${page}`);
-      const data = await response.json();
-      const movies = data.results.map(movie => {
-        return {
-          id: movie.id,
-          title: movie.title,
-          description: movie.overview,
-          image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-        };
-      });
-      
-      const sql = 'INSERT INTO Movies (movie_id, name, description, image_url) VALUES ($1, $2, $3, $4)';
-      for(let i = 0; i < movies.length; i++) {
-        db.any(sql, [movies[i].id, movies[i].title, movies[i].description, movies[i].image_url])
-        .then(async data => {
-          res.status(200);
-        })
-        .catch(err => {
-          console.log(err);
-        })
+    // Loop through all pages of results and store movies in database
+    for (let page = 1; page <= totalPages; page++) {
+      const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=${page}`);
+      const movies = response.data.results;
+
+      // Insert each movie into the Movies table
+      for (let i = 0; i < movies.length; i++) {
+        const movie = movies[i];
+        const movieId = movie.id;
+        const name = movie.title;
+        const description = movie.overview;
+        const imageUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null;
+        const year = parseInt(movie.release_date.substring(0, 4));
+
+        // Insert movie into database
+        await pool.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
       }
-      
-
-      page++;
-      total_pages = data.total_pages;
-      count++;
     }
 
-    res.send('Movies inserted into database successfully!');
-  }
-  catch (error) {
-    console.error(error);
-    res.status(500).send('Error inserting movies into database');
-  }
-});
-
-app.get('/movieInfo', async (req, res) => {
-  const query = `SELECT * FROM Movies`;
-  db.any(query)
-  .then(async movies => {
-    console.log(movies);
-  })
-  .catch(err => {
-    console.log(err);
-  })
-});
+    res.status(200).send('Movies successfully stored in database');
+  } catch (error) {
 
 
-/* GET Endpoint for retrieving REVIEWS for movies from the TMDb API
-          and inserting them into the MovieReviews table */
-app.get('/reviews', async (req, res) => {
+// API Key for Google Cloud Sentiment Analysis (gunhi)
+const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
+
+// helper function to get sentiment score from Google Cloud's sentiment analysis API
+async function getSentimentScore(review) {
   try {
-    const api_key = '32e03fbc1ac17bae20d12c4548e26ce8';
-    const movies = await db.query('SELECT movie_id FROM Movies');
+    const response = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${sentiment_api_key}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        document: {
+          type: 'PLAIN_TEXT',
+          content: review,
+        },
+        encodingType: 'UTF8',
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    for (const movie of movies) {
-      const movie_id = movie.movie_id;
-      const response = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/reviews?api_key=${api_key}`);
-      const data = await response.json();
-      const reviews = data.results.map(review => {
-        return {
-          movie_id: movie_id,
-          review: review.content,
-          sentimentScore: -2
-        };
-      });
-
-      const sql = 'INSERT INTO MovieReviews (movie_id, review, sentimentScore) VALUES ($1, $2, $3)';
-      for (let i = 0; i < reviews.length; i++) {
-        db.any(sql, [reviews[i].movie_id, reviews[i].review, reviews[i].sentimentScore])
-        .then(data => {
-          res.status(200);
-        })
-        .catch(err => {
-          console.log(err);
-        })
-      }
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
     }
 
-    res.send('Movie reviews inserted into database successfully!');
+    const result = await response.json();
+    return result.documentSentiment.score;
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error inserting movie reviews into database');
+    throw new Error('Error retrieving sentiment score');
+  }
+}
+
+//gets all tmdb reviews
+app.get('/tmdb-reviews', async (req, res) => {
+  try {
+    // Get all movies from database
+    const movies = await pool.query('SELECT * FROM Movies');
+
+    // Loop through each movie and get reviews from TMDB API
+    for (const movie of movies.rows) {
+      const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie.tmdb_id}/reviews?api_key=${tmdb_apiKey}`);
+
+      // Loop through each review and store in database
+      for (const review of response.data.results) {
+        // Perform sentiment analysis on review
+        const sentimentResponse = await axios.post(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${sentiment_api_key}`, {
+          document: {
+            type: 'PLAIN_TEXT',
+            content: review.content
+          }
+        });
+
+        // Insert review and sentiment score into database
+        await pool.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
+
+      }
+    }
+
+    res.send('Successfully retrieved and stored TMDB reviews');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
   }
 });
+
+
+// Endpoint to get Letterboxd reviews for movies already in database
+app.get('/letterboxd/reviews', async (req, res) => {
+  try {
+    // Get movies from database
+    const result = await pool.query('SELECT * FROM Movies');
+    const movies = result.rows;
+    
+    // Loop through movies and get reviews
+    for (const movie of movies) {
+      // Make request to Letterboxd API to get reviews for movie
+      const response = await axios.get(`https://api.letterboxd.com/api/v0.1/films/${movie.movie_id}/reviews?perpage=100`);
+      const reviews = response.data.items;
+      // Loop through reviews and insert into database with sentiment score
+      for (const review of reviews) {
+        const sentimentScore = await getSentimentScore(review.body);
+        const values = [movie.movie_id, review.body, sentimentScore];
+        await pool.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
+      }
+    }
+    res.send('Letterboxd reviews successfully retrieved and stored.');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error retrieving and storing Letterboxd reviews.');
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
           
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
@@ -360,6 +405,6 @@ sortReviewsBySentiment();
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-// module.exports = app.listen(3000);
-app.listen(3000);
+module.exports = app.listen(3000);
+// app.listen(3000);
 console.log('Server is listening on port 3000');
