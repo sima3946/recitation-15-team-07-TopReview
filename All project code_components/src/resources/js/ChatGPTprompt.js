@@ -44,21 +44,14 @@
 // };
 
 // function generatePrompt(movie) {
+//     //How can I use sql file (query.sql) to generate a prompt for chat to use 
 //     const capitalizedMovie = Movies.name[0].toUpperCase() + Movies.name.slice(1).toLowerCase();
 //     const MovieReviews = MovieReviews.sentimentScore;
-//     if ((${ MovieReviews }) >= 70)
+//     if (capitalizedMovie = (<%= Movies.name %>))
 //     {
 //         return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
 //     }
-//     if (((${ MovieReviews }) >= 30) && ((${ MovieReviews }) <= 69))
-//     {
-//         return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
-//     }
-//     if (((${ MovieReviews }) >= 0) && ((${ MovieReviews }) <= 29))
-//     {
-//         return `Please summarize theses movie reviews for ${capitalizedMovie}, ${MovieReviews}`;
-//     }
-//     if (MovieReviews < 0) {
+//     else{
 //         return `Could not find a review for the movie: ${capitalizedMovie}`;
 //     }
 // }

@@ -78,7 +78,20 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-  res.render("pages/home");
+  const query = `SELECT * FROM Movies LIMIT 5`
+  db.any(query)
+  .then(async movies => {
+    let titles = ['', '', '', '', '']
+    let image_urls = ['', '', '', '', '']
+    for (let i = 0; i < 5; i++) {
+      titles[i] = movies[i].name
+      image_urls[i] = movies[i].image_url
+    }
+    res.render("pages/home", {names: titles, urls: image_urls});
+  })
+  .catch(err => {
+    console.log(err);
+  })
 });
 
 app.get('/profile', (req, res) => {
@@ -262,7 +275,7 @@ app.get('/reviews', async (req, res) => {
   }
 });
 
-//supposed to have the search bar render the page of the movie that is being searched -- Siranush 
+//supposed to have the search bar render the page of the movie that is being searched
 app.get('/search', async (req, res) => {
   try {
     //const movie = req.body.search || '';
