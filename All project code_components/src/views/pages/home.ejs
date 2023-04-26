@@ -1,21 +1,22 @@
 <%- include ('../partials/header') %>
-    <main>
-        <!-- Search Bar content -->
-        <div class="gradient-custom search">
-            <a href="#footer">TopReview</a>
-            <div class="search-container">
-                <!-- I believe we are going to have to put an action for the search feature -->
-                <form>
-                    <input type="text" placeholder="Search.." name="search">
-                    <button type="submit">Submit</button>
-                </form>
+
+<main>
+    <%- include ('../partials/navigationBar') %>
+    <div class="container">
+        <section class="bg-dark">
+            <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
+        
+            <div class="row">
+                <% for (let i = 0; i < 5; i++) { %>
+                    <div class="card" style="width: 16rem;">
+                        <img src="<%= urls[i] %>" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= names[i] %></h5>
+                        </div>
+                    </div>
+                <% } %>
             </div>
-        </div>
-
-        <%- include ('../partials/navigationBar') %>
-
-        <div class="container text-center" id="movies">
-            <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-        </div>
-    </main>
+        </section>
+    </div>
+</main>
 <%- include ('../partials/footer') %>

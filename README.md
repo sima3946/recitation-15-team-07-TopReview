@@ -8,7 +8,7 @@ For movie lovers trying to get a comprehensive view of a movie without having to
 - Brandon Lehman; Lumi297 
 - Siranush Mazmandyan; sima3946 
 - Alex Pham; avqpham01 
-- Kira Vele; kive7791
+- Kira Velez; kive7791
 
 ## Technology Stack References
 
