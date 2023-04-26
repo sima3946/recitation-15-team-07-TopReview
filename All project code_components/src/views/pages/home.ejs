@@ -1,19 +1,39 @@
 <%- include ('../partials/header') %>
-    <main>
-        <!-- Search Bar content -->
-        <div class="gradient-custom search">
-            <a href="#footer">TopReview</a>
-            <div class="search-container">
-                <!-- I believe we are going to have to put an action for the search feature -->
-                <form method="GET">
-                    <input type="text" placeholder="Search.." name="search">
-                    <button type="submit">Submit</button>
-                </form>
+<main>
+  <!-- Search Bar content -->
+  <div class="gradient-custom search">
+    <a href="#footer">TopReview</a>
+    <div class="search-container">
+      <!-- I believe we are going to have to put an action for the search feature -->
+      <form method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+  <%- include ('../partials/navigationBar') %>
+    <div class="container">
+      <h1 class="mt-5 text-black text-center">Popular Movies</h1>
+      <div class="card-container d-flex flex-wrap justify-content-center">
+        <% for (let i=0; i < movies.length; i++) { %>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <a href="/movies/<%= movies[i].id %>">
+                <img class="card-img-top" src="<%= movies[i].image_url %>" alt="Poster for <%= movies[i].name %>">
+                <div class="card-body">
+                  <h5 class="card-title text-center">
+                    <%= movies[i].name %>
+                  </h5>
+                  <p class="card-text">
+                    <%= movies[i].description %>
+                  </p>
+                </div>
+              </a>
             </div>
-        </div>
-        <%- include ('../partials/navigationBar') %>
-        <div class="container text-center" id="movies">
-            <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-        </div>
-    </main>
+          </div>
+          <% } %>
+      </div>
+    </div>
+</main>
+
 <%- include ('../partials/footer') %>
