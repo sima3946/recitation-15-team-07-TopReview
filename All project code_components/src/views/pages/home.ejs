@@ -1,34 +1,22 @@
 <%- include ('../partials/header') %>
-<%- include ('../partials/navigationBar') %>
 
-<style>
-    .title {
-        color: white;
-        margin-top: .5cm;
-        margin-left: .5cm;
-    };
-
-    .cardSpace {
-        color: rgb(74, 74, 74);
-        margin-left: .5cm;
-    }
-</style>
-
-<section class="bg-dark">
-    <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
-
-    <div class="row">
-        <% for (let i = 0; i < 5; i++) { %>
-            <div class="card" style="width: 16rem;">
-                <img src="<%= urls[i] %>" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title"><%= names[i] %></h5>
-                </div>
+<main>
+    <%- include ('../partials/navigationBar') %>
+    <div class="container">
+        <section class="bg-dark">
+            <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
+        
+            <div class="row">
+                <% for (let i = 0; i < 5; i++) { %>
+                    <div class="card" style="width: 16rem;">
+                        <img src="<%= urls[i] %>" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= names[i] %></h5>
+                        </div>
+                    </div>
+                <% } %>
             </div>
-        <% } %>
+        </section>
     </div>
-
-
-</section>
-
+</main>
 <%- include ('../partials/footer') %>
