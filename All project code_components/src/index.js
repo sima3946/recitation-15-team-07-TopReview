@@ -265,11 +265,80 @@ app.get('/reviewInfo', async (req, res) => {
 })
 
 
+app.get('scores', async(req, res) => {
+  try{
+    
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute('SELECT id, reviews FROM movies');
+  
+    // Loop through the movies and their reviews, and make an API call for each review
+    for (const row of rows) {
+      const movieId = row.id;
+      const reviews = JSON.parse(row.reviews);
+  
+      for (const review of reviews) {
+        const reviewText = review.text;
+        const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
+  
+        try {
+          const response = await axios.get(apiUrl);
+          const sentiment = response.data.sentiment;
+          console.log(`Sentiment analysis result for review '${reviewText}' in movie ${movieId}: ${sentiment}`);
+          // Update the review in the database with the sentiment analysis result
+          await connection.execute('UPDATE movies SET reviews = JSON_SET(reviews, CONCAT("$[", JSON_SEARCH(reviews, "one", ?), "].sentiment"), ?) WHERE id = ?', [reviewText, sentiment, movieId]);
+        } catch (error) {
+          console.error(`Error analyzing sentiment for review '${reviewText}' in movie ${movieId}: ${error}`);
+        }
+      }
+    }
+  } catch(error) {
+    console.error(error);
+    res.status(500).send('Error giving reviews sentiment score');
+  }
+});
 
 
+async function sortReviewsBySentiment() {
+  // Connect to the database and retrieve the reviews
+  const connection = await mysql.createConnection(dbConfig);
+  const [rows] = await connection.execute('SELECT sentiment_score FROM reviews');
 
+  // Loop through the reviews and group them into bad, medium, and good categories based on their sentiment score
+  const badReviews = [];
+  const mediumReviews = [];
+  const goodReviews = [];
 
+  for (const row of rows) {
+    const sentimentScore = row.sentiment_score;
 
+    if (sentimentScore === null || sentimentScore === undefined) {
+      continue;
+    }
+
+    if (sentimentScore < -0.33) {
+      badReviews.push(row);
+    } else if (sentimentScore >= -0.33 && sentimentScore <= 0.33) {
+      mediumReviews.push(row);
+    } else {
+      goodReviews.push(row);
+    }
+  }
+
+  // Print the results
+  console.log(`Bad reviews (${badReviews.length}):`);
+  console.log(badReviews.map(review => review.id));
+
+  console.log(`Medium reviews (${mediumReviews.length}):`);
+  console.log(mediumReviews.map(review => review.id));
+
+  console.log(`Good reviews (${goodReviews.length}):`);
+  console.log(goodReviews.map(review => review.id));
+
+  // Close the database connection
+  await connection.end();
+}
+
+sortReviewsBySentiment();
 
 
 
