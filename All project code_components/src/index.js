@@ -8,7 +8,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-//const mysql = require('mysql'); //I'm not sure what this is supposed to be doing b/c we run into errors here when we compose docker !!!
+const mysql = require('mysql');
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
@@ -164,8 +164,9 @@ app.get('/movies', async (req, res) => {
     const api_key = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
     let page = 1;
     let total_pages = 1;
+    let count = 0;
 
-    while (page <= total_pages) {
+    while (page <= total_pages && (count < 1)) {
       const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${api_key}&page=${page}`);
       const data = await response.json();
       const movies = data.results.map(movie => {
@@ -176,22 +177,41 @@ app.get('/movies', async (req, res) => {
           image_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         };
       });
-
-      const sql = 'INSERT INTO Movies (movie_id, name, description, image_url) VALUES ?';
-      const values = movies.map(movie => [movie.id, movie.title, movie.description, movie.image_url]);
-      connection.query(sql, [values], (error, results) => {
-        if (error) throw error;
-      });
+      
+      const sql = 'INSERT INTO Movies (movie_id, name, description, image_url) VALUES ($1, $2, $3, $4)';
+      for(let i = 0; i < movies.length; i++) {
+        db.any(sql, [movies[i].id, movies[i].title, movies[i].description, movies[i].image_url])
+        .then(async data => {
+          res.status(200);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
+      
 
       page++;
       total_pages = data.total_pages;
+      count++;
     }
 
     res.send('Movies inserted into database successfully!');
-  } catch (error) {
+  }
+  catch (error) {
     console.error(error);
     res.status(500).send('Error inserting movies into database');
   }
+});
+
+app.get('/movieInfo', async (req, res) => {
+  const query = `SELECT * FROM Movies`;
+  db.any(query)
+  .then(async movies => {
+    console.log(movies);
+  })
+  .catch(err => {
+    console.log(err);
+  })
 });
 
 
@@ -200,7 +220,7 @@ app.get('/movies', async (req, res) => {
 app.get('/reviews', async (req, res) => {
   try {
     const api_key = '32e03fbc1ac17bae20d12c4548e26ce8';
-    const movies = await connection.query('SELECT movie_id FROM Movies');
+    const movies = await db.query('SELECT movie_id FROM Movies');
 
     for (const movie of movies) {
       const movie_id = movie.movie_id;
@@ -214,11 +234,16 @@ app.get('/reviews', async (req, res) => {
         };
       });
 
-      const sql = 'INSERT INTO MovieReviews (movie_id, review, sentimentScore) VALUES ?';
-      const values = reviews.map(review => [review.movie_id, review.review, review.sentimentScore]);
-      connection.query(sql, [values], (error, results) => {
-        if (error) throw error;
-      });
+      const sql = 'INSERT INTO MovieReviews (movie_id, review, sentimentScore) VALUES ($1, $2, $3)';
+      for (let i = 0; i < reviews.length; i++) {
+        db.any(sql, [reviews[i].movie_id, reviews[i].review, reviews[i].sentimentScore])
+        .then(data => {
+          res.status(200);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      }
     }
 
     res.send('Movie reviews inserted into database successfully!');
@@ -247,12 +272,63 @@ app.get('/search', async (req, res) => {
     return;
   }
 });
+app.get('/reviewInfo', async (req, res) => {
+  const query1 = `SELECT * FROM MovieReviews`;
+  const query2 = `SELECT * FROM MovieReviews ORDER BY movie_id ;`
+  db.any(query1)
+  .then(async movies => {
+    console.log(movies);
+  })
+  .catch(err => {
+    console.log(err);
+  })
+})
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.render('pages/login', { message: 'Logged out Successfully' });
 });
 
+
+import { render } from "ejs";
+/**** CHAT TESING ****/
+import { useState } from "react";
+
+//supposed to have the search bar render the page of the movie that is being searched -- Siranush 
+app.get('/search', async (req, res) => {
+  try {
+    //const movie = req.body.search || '';
+    const query = "SELECT (Movies.movie_id) FROM Movies WHERE Movies.name = $1";
+    let movieLook = await db.any(query, [req.body.search]); //should be able to find the movie that is being searched for
+    res.render('pages/review', movieLook);
+    // if (movie.trim().length > 0) {
+    //   res.send('Movie successfully found!');
+    // }
+  } catch (error) {
+    res.status(400).json({
+      error: {
+        message: "Please enter a valid movie name",
+      }
+    });
+    return;
+  }
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.render('pages/login', { message: 'Logged out Successfully' });
+});
+
+  async function onSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ animal: animalInput }),
+      });
 
 import { render } from "ejs";
 /**** CHAT TESING ****/
