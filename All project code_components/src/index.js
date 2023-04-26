@@ -77,7 +77,20 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-  res.render("pages/home");
+  const query = `SELECT * FROM Movies LIMIT 5`
+  db.any(query)
+  .then(async movies => {
+    let titles = ['', '', '', '', '']
+    let image_urls = ['', '', '', '', '']
+    for (let i = 0; i < 5; i++) {
+      titles[i] = movies[i].name
+      image_urls[i] = movies[i].image_url
+    }
+    res.render("pages/home", {names: titles, urls: image_urls});
+  })
+  .catch(err => {
+    console.log(err);
+  })
 });
 
 app.get('/profile', (req, res) => {
@@ -265,7 +278,7 @@ app.get('/reviewInfo', async (req, res) => {
 })
 
 
-app.get('scores', async(req, res) => {
+app.get('/scores', async(req, res) => {
   try{
     
     const connection = await mysql.createConnection(dbConfig);
