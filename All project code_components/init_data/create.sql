@@ -18,3 +18,7 @@ CREATE TABLE MovieReviews (
   sentimentScore INT,
   FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
+
+CREATE TABLE SortedReviews (
+  
+)
