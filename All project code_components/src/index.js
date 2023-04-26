@@ -8,7 +8,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const mysql = require('mysql');
+// const mysql = require('mysql');
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
@@ -142,7 +142,6 @@ app.post('/register', async (req, res) => {
 
 })
 
-
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
   db.one(query)
@@ -168,7 +167,6 @@ app.get('/', (req, res) => {
     res.render('home', { movies: movies });
   });
 });
-
 
 // GET Endpoint for retrieving movies from the TMDb API
 app.get('/movies', async (req, res) => {
@@ -200,7 +198,6 @@ app.get('/movies', async (req, res) => {
             console.log(err);
           })
       }
-
 
       page++;
       total_pages = data.total_pages;
@@ -301,7 +298,7 @@ app.get('/logout', (req, res) => {
   res.render('pages/login', { message: 'Logged out Successfully' });
 });
 
-//supposed to have the search bar render the page of the movie that is being searched -- Siranush 
+//supposed to have the search bar render the page of the movie that is being searched
 app.get('/search', async (req, res) => {
   try {
     //const movie = req.body.search || '';
@@ -355,8 +352,6 @@ app.get('/search', async (req, res) => {
 //   }
 //   res.render('pages/reviews')
 // }
-
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
