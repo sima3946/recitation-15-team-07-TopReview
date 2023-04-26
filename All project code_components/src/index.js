@@ -289,11 +289,6 @@ app.get('/logout', (req, res) => {
   res.render('pages/login', { message: 'Logged out Successfully' });
 });
 
-
-import { render } from "ejs";
-/**** CHAT TESING ****/
-import { useState } from "react";
-
 //supposed to have the search bar render the page of the movie that is being searched -- Siranush 
 app.get('/search', async (req, res) => {
   try {
@@ -312,11 +307,6 @@ app.get('/search', async (req, res) => {
     });
     return;
   }
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.render('pages/login', { message: 'Logged out Successfully' });
 });
 
   async function onSubmit(event) {
