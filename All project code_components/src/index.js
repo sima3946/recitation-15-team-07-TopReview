@@ -77,21 +77,56 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-  const query = `SELECT * FROM Movies LIMIT 5`
+  const query = `SELECT * FROM Movies LIMIT 6`
   db.any(query)
   .then(async movies => {
-    let titles = ['', '', '', '', '']
-    let image_urls = ['', '', '', '', '']
-    for (let i = 0; i < 5; i++) {
+    let titles = ['', '', '', '', '', '']
+    let image_urls = ['', '', '', '', '', '']
+    let movie_ids = ['', '', '', '', '', '']
+    for (let i = 0; i < 6; i++) {
       titles[i] = movies[i].name
       image_urls[i] = movies[i].image_url
+      movie_ids[i] = movies[i].movie_id
     }
-    res.render("pages/home", {names: titles, urls: image_urls, status: 200, message: 'Success'});
+    res.render("pages/home", {names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success'});
   })
   .catch(err => {
     console.log(err);
   })
 });
+
+app.get('/review', (req, res) => {
+  movieID = '';
+  found = false;
+  for (let i = 0; i < req.url.length; i++) {
+    if (found == false) {
+      if (req.url[i] == 'i' && req.url[i + 1] == 'd') {
+        found = true;
+        i++; i++;
+      }
+    }
+    else {
+      movieID += req.url[i]
+    }
+  }
+
+  const queryMovies = `SELECT * FROM movies WHERE movie_id = '${movieID}';`
+  const queryReviews = `SELECT * FROM MovieReviews WHERE movie_id = '${movieID}';`
+
+  db.any(queryMovies)
+  .then(dataMovies => {
+    db.any(queryReviews)
+    .then(dataReviews => {
+      res.render("pages/review", {movie: dataMovies, reviews: dataReviews})
+    })
+    .catch(err2 => {
+      console.log(err2)
+    })
+  })
+  .catch(err1 => {
+    console.log(err1)
+  })
+})
 
 app.get('/profile', (req, res) => {
   res.render("pages/profile", {
@@ -151,9 +186,7 @@ app.post('/register', async (req, res) => {
       return
     });
   }
-  
 })
-
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
@@ -322,7 +355,7 @@ app.get('/reviewInfo', async (req, res) => {
   })
 })
 
-
+/*
 app.get('/scores', async(req, res) => {
   try{
     const connection = await mysql.createConnection(dbConfig);
@@ -395,11 +428,7 @@ async function sortReviewsBySentiment() {
 }
 
 sortReviewsBySentiment();
-
-
-
-
-
+*/
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
