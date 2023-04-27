@@ -1,34 +1,63 @@
 <%- include ('../partials/header') %>
-<main>
-    <!-- Search Bar content
-    <div class="gradient-custom search">
-        <a href="#footer">TopReview</a>
-        <div class="search-container">
-            I believe we are going to have to put an action for the search feature
-            <form method="GET">
-                <input type="text" placeholder="Search.." name="search">
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div> -->
+<%- include ('../partials/navigationBar') %>
 
-    <%- include ('../partials/navigationBar') %>
+<style>
+    *, *::after, *::before {
+        box-sizing: border-box;
+    }
+
+    .title {
+        color: white;
+        margin-top: .5cm;
+        margin-left: .5cm;
+    };
+
+    .cardSpace {
+        color: rgb(74, 74, 74);
+        margin-left: .5cm;
+    }
+
+    .container {
+        margin-top: .4cm;
+        margin-right: .1cm;
+    }
+
+    .slider {
+        display: flex;
+    }
+
+    .slider > a > img {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        padding: .25rem;
+    }
+    
+    .bigCard {
+        width: 82%;
+        margin-top: .3cm;
+        margin-left: .3cm;
+        margin-bottom: .3cm;
+        margin-right: .3cm;
+    }
+</style>
+
+<div class="card bigCard gradient-custom">
     <div class="container">
-        <section class="bg-dark">
-            <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
-
-            <div class="row">
-                <% for (let i = 0; i < 5; i++) { %>
-                    <div class="card" style="width: 16rem;">
-                        <img src="<%= urls[i] %>" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= names[i] %></h5>
-                        </div>
-                    </div>
-                <% } %>
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
+                <div class="slider">
+                    <a href="/review?id=<%= ids[0] %>"><img src="<%= urls[0] %>"></a>
+                    <a href="/review?id=<%= ids[1] %>"><img src="<%= urls[1] %>"></a>
+                    <a href="/review?id=<%= ids[2] %>"><img src="<%= urls[2] %>"></a>
+                    <a href="/review?id=<%= ids[3] %>"><img src="<%= urls[3] %>"></a>
+                    <a href="/review?id=<%= ids[4] %>"><img src="<%= urls[4] %>"></a>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
-</main>
+</div>
 
+</div>
+</div>
 <%- include ('../partials/footer') %>
