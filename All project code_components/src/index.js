@@ -203,8 +203,6 @@ app.post('/userID', async (req, res) => {
 });
 
 
-
-
 const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
 
 // Endpoint to retrieve movies from TMDB and store them in the Movies table
@@ -240,7 +238,6 @@ app.get('/movies', async (req, res) => {
   }
 })
 
-/*
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
 
@@ -273,7 +270,7 @@ async function getSentimentScore(review) {
   }
 }
 
-*/
+
 //gets all tmdb reviews
 app.get('/tmdb-reviews', async (req, res) => {
   try {
@@ -293,6 +290,7 @@ app.get('/tmdb-reviews', async (req, res) => {
             content: review.content
           }
         });
+        console.log(sentimentResponse);
 
         // Insert review and sentiment score into database
         await pool.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
@@ -333,18 +331,6 @@ app.get('/letterboxd/reviews', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
           
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
@@ -359,37 +345,6 @@ app.get('/reviewInfo', async (req, res) => {
 })
 
 /*
-app.get('/scores', async(req, res) => {
-  try{
-    const connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute('SELECT id, reviews FROM movies');
-  
-    // Loop through the movies and their reviews, and make an API call for each review
-    for (const row of rows) {
-      const movieId = row.id;
-      const reviews = JSON.parse(row.reviews);
-  
-      for (const review of reviews) {
-        const reviewText = review.text;
-        const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
-  
-        try {
-          const response = await axios.get(apiUrl);
-          const sentiment = response.data.sentiment;
-          console.log(`Sentiment analysis result for review '${reviewText}' in movie ${movieId}: ${sentiment}`);
-          // Update the review in the database with the sentiment analysis result
-          await connection.execute('UPDATE movies SET reviews = JSON_SET(reviews, CONCAT("$[", JSON_SEARCH(reviews, "one", ?), "].sentiment"), ?) WHERE id = ?', [reviewText, sentiment, movieId]);
-        } catch (error) {
-          console.error(`Error analyzing sentiment for review '${reviewText}' in movie ${movieId}: ${error}`);
-        }
-      }
-    }
-  } catch(error) {
-    console.error(error);
-    res.status(500).send('Error giving reviews sentiment score');
-  }
-});
-
 async function sortReviewsBySentiment() {
   // Connect to the database and retrieve the reviews
   const connection = await mysql.createConnection(dbConfig);
@@ -432,7 +387,6 @@ async function sortReviewsBySentiment() {
 
 sortReviewsBySentiment();
 */
-
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
