@@ -11,7 +11,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-// const mysql = require('mysql');
+const mysql = require('mysql');
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server.
 // const openai = require('openai'); //Make http requests from our server to openai.
@@ -44,6 +44,7 @@ db.connect()
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
+
 app.use( express.static( "resources" ) );
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
@@ -208,8 +209,6 @@ app.post('/userID', async (req, res) => {
 });
 
 
-
-
 const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
 
 // Endpoint to retrieve movies from TMDB and store them in the Movies table
@@ -245,7 +244,6 @@ app.get('/movies', async (req, res) => {
   }
 })
 
-/*
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
 
@@ -278,7 +276,7 @@ async function getSentimentScore(review) {
   }
 }
 
-*/
+
 //gets all tmdb reviews
 app.get('/tmdb-reviews', async (req, res) => {
   try {
@@ -298,6 +296,7 @@ app.get('/tmdb-reviews', async (req, res) => {
             content: review.content
           }
         });
+        console.log(sentimentResponse);
 
         // Insert review and sentiment score into database
         await pool.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
@@ -338,18 +337,6 @@ app.get('/letterboxd/reviews', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
           
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
@@ -362,38 +349,6 @@ app.get('/reviewInfo', async (req, res) => {
     console.log(err);
   })
 })
-
-/*
-app.get('/scores', async(req, res) => {
-  try{
-    const connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute('SELECT id, reviews FROM movies');
-  
-    // Loop through the movies and their reviews, and make an API call for each review
-    for (const row of rows) {
-      const movieId = row.id;
-      const reviews = JSON.parse(row.reviews);
-  
-      for (const review of reviews) {
-        const reviewText = review.text;
-        const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
-  
-        try {
-          const response = await axios.get(apiUrl);
-          const sentiment = response.data.sentiment;
-          console.log(`Sentiment analysis result for review '${reviewText}' in movie ${movieId}: ${sentiment}`);
-          // Update the review in the database with the sentiment analysis result
-          await connection.execute('UPDATE movies SET reviews = JSON_SET(reviews, CONCAT("$[", JSON_SEARCH(reviews, "one", ?), "].sentiment"), ?) WHERE id = ?', [reviewText, sentiment, movieId]);
-        } catch (error) {
-          console.error(`Error analyzing sentiment for review '${reviewText}' in movie ${movieId}: ${error}`);
-        }
-      }
-    }
-  } catch(error) {
-    console.error(error);
-    res.status(500).send('Error giving reviews sentiment score');
-  }
-});
 
 async function sortReviewsBySentiment() {
   // Connect to the database and retrieve the reviews
@@ -435,8 +390,7 @@ async function sortReviewsBySentiment() {
   await connection.end();
 }
 
-sortReviewsBySentiment();
-*/
+// sortReviewsBySentiment();
 
 
 /**** CHAT TESING ****/
