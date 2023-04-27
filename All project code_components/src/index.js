@@ -236,8 +236,11 @@ app.get('/movies', async (req, res) => {
 
     res.status(200).send('Movies successfully stored in database');
   } catch (error) {
+    console.log(error)
+  }
+})
 
-
+/*
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
 
@@ -270,6 +273,7 @@ async function getSentimentScore(review) {
   }
 }
 
+*/
 //gets all tmdb reviews
 app.get('/tmdb-reviews', async (req, res) => {
   try {
@@ -302,7 +306,6 @@ app.get('/tmdb-reviews', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
 
 // Endpoint to get Letterboxd reviews for movies already in database
 app.get('/letterboxd/reviews', async (req, res) => {
@@ -434,6 +437,6 @@ sortReviewsBySentiment();
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-module.exports = app.listen(3000);
-// app.listen(3000);
+// module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
