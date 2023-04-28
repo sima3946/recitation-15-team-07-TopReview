@@ -80,22 +80,26 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-  const query = `SELECT * FROM Movies LIMIT 6`
+  try {
+    const query = `SELECT * FROM Movies LIMIT 6;`
   db.any(query)
     .then(async movies => {
       let titles = ['', '', '', '', '', '']
       let image_urls = ['', '', '', '', '', '']
       let movie_ids = ['', '', '', '', '', '']
       for (let i = 0; i < 6; i++) {
-        // titles[i] = movies[i].name
-        // image_urls[i] = movies[i].image_url
-        // movie_ids[i] = movies[i].movie_id
+        titles[i] = movies[i].name;
+        image_urls[i] = movies[i].image_url;
+        movie_ids[i] = movies[i].movie_id;
       }
       res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
     })
     .catch(err => {
       console.log(err);
     })
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.get('/review', (req, res) => {
@@ -114,12 +118,14 @@ app.get('/review', (req, res) => {
   }
 
   const queryMovies = `SELECT * FROM movies WHERE movie_id = '${movieID}';`
-  const queryReviews = `SELECT * FROM MovieReviews WHERE movie_id = '${movieID}';`
+  const queryReviews = `SELECT * FROM TMDB_Reviews WHERE movie_id = '${movieID}';`
 
   db.any(queryMovies)
     .then(dataMovies => {
+      console.log('dataMovies'+dataMovies[0].name)
       db.any(queryReviews)
         .then(dataReviews => {
+          console.log('dataMovies'+dataReviews)
           res.render("pages/review", { movie: dataMovies, reviews: dataReviews })
         })
         .catch(err2 => {
@@ -228,11 +234,19 @@ app.get('/movies', async (req, res) => {
         const name = movie.title;
         const description = movie.overview;
         const imageUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null;
-        const year = parseInt(movie.release_date.substring(0, 4));
+        // year has some undefined integer values that are coming in
+        // const year = parseInt(movie.release_date.substring(0, 4));
+        const tyear = new Date(movie.release_date).getFullYear();
+        const year = (isNaN(tyear) ? new Date().getFullYear() : tyear);
 
         // Insert movie into database
         // changed pool to db
-        await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
+        try {
+          await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
+        } catch(error)
+        {
+          // console.log(error);
+        }
       }
     }
 
@@ -352,7 +366,6 @@ app.get('/reviewInfo', async (req, res) => {
     })
 })
 
-/*
 async function sortReviewsBySentiment() {
   // Connect to the database and retrieve the reviews
   const connection = await mysql.createConnection(dbConfig);
@@ -371,6 +384,7 @@ async function sortReviewsBySentiment() {
     }
 
     if (sentimentScore < -0.33) {
+      // call chatGPT(badReviews)
       badReviews.push(row);
     } else if (sentimentScore >= -0.33 && sentimentScore <= 0.33) {
       mediumReviews.push(row);
@@ -394,8 +408,6 @@ async function sortReviewsBySentiment() {
 }
 
 sortReviewsBySentiment();
-*/
-
 
 /* CHAT TESING */
 
