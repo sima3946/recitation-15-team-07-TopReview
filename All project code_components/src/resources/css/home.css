@@ -1,0 +1,100 @@
+/***********************************************************
+Home Page Style Guide (Not in Use; need to figure this out)
+************************************************************/
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+.title {
+    color: white;
+    margin-top: .5cm;
+    margin-left: .5cm;
+}
+
+;
+
+.cardSpace {
+    color: rgb(74, 74, 74);
+    margin-left: .5cm;
+}
+
+.container {
+    margin-top: .4cm;
+    margin-right: .1cm;
+}
+
+.slider {
+    display: flex;
+}
+
+.slider>a>img {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    padding: .25rem;
+}
+
+.bigCard {
+    width: 82%;
+    margin-top: .3cm;
+    margin-left: .3cm;
+    margin-bottom: .3cm;
+    margin-right: .3cm;
+}
+
+/* Review page style guide */
+.flex {
+    flex: 0 0 100%;
+    height: 100vh;
+}
+
+.card-photo {
+    aspect-ratio: 2 / 3;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    margin-left: 4vw;
+    height: 50vw;
+}
+
+.card-review {
+    margin-left: 3vw;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    height: 10vh;
+    width: 52vw;
+}
+
+.column-left-sm {
+    float: left;
+    width: 3vw;
+}
+
+.column-left-large {
+    float: left;
+    width: 30vw;
+}
+
+.column-right {
+    float: right;
+    width: 57vw;
+}
+
+.card-photo>img {
+    aspect-ratio: 2 / 3;
+    margin-top: 2vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
+    margin-bottom: 2vh;
+}
+
+.btn {
+    margin-top: 2vh;
+    margin-left: 1vw;
+}
+
+.text {
+    color: white;
+    margin-left: 2vw;
+    margin-top: 1vh;
+}

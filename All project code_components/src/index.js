@@ -11,6 +11,8 @@ const bcrypt = require('bcrypt'); //  To hash passwords
 const mysql = require('mysql');
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+// const openai = require('openai'); //Make http requests from our server to openai.
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -40,6 +42,7 @@ db.connect()
 // <!-- Section 3 : App Settings -->
 // *****************************************************
 
+app.use(express.static("resources"));
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
@@ -65,7 +68,7 @@ app.use(
 // All API routes go here
 
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 app.get('/', (req, res) => {
@@ -77,21 +80,63 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-  const query = `SELECT * FROM Movies LIMIT 5`
+
+  try {
+    const query = `SELECT * FROM Movies LIMIT 6;`
   db.any(query)
-  .then(async movies => {
-    let titles = ['', '', '', '', '']
-    let image_urls = ['', '', '', '', '']
-    for (let i = 0; i < 5; i++) {
-      titles[i] = movies[i].name
-      image_urls[i] = movies[i].image_url
-    }
-    res.render("pages/home", {names: titles, urls: image_urls});
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      let titles = ['', '', '', '', '', '']
+      let image_urls = ['', '', '', '', '', '']
+      let movie_ids = ['', '', '', '', '', '']
+      for (let i = 0; i < 6; i++) {
+        titles[i] = movies[i].name;
+        image_urls[i] = movies[i].image_url;
+        movie_ids[i] = movies[i].movie_id;
+      }
+      res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  } catch (error) {
+    console.log(error);
+  }
 });
+
+app.get('/review', (req, res) => {
+  movieID = '';
+  found = false;
+  for (let i = 0; i < req.url.length; i++) {
+    if (found == false) {
+      if (req.url[i] == 'i' && req.url[i + 1] == 'd') {
+        found = true;
+        i++; i++;
+      }
+    }
+    else {
+      movieID += req.url[i]
+    }
+  }
+
+  const queryMovies = `SELECT * FROM movies WHERE movie_id = '${movieID}';`
+  const queryReviews = `SELECT * FROM TMDB_Reviews WHERE movie_id = '${movieID}';`
+
+  db.any(queryMovies)
+    .then(dataMovies => {
+      console.log('dataMovies'+dataMovies[0].name)
+      db.any(queryReviews)
+        .then(dataReviews => {
+          console.log('dataMovies'+dataReviews)
+          res.render("pages/review", { movie: dataMovies, reviews: dataReviews })
+        })
+        .catch(err2 => {
+          console.log(err2)
+        })
+    })
+    .catch(err1 => {
+      console.log(err1)
+    })
+})
 
 app.get('/profile', (req, res) => {
   res.render("pages/profile", {
@@ -137,39 +182,35 @@ app.post('/register', async (req, res) => {
   const username = await req.body.username;
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   if (req.body.password == '') {
-    res.status(201).json({message: 'No input'})
+    res.status(201).json({ message: 'No input' })
     return
   }
   else {
     db.any(query, [username, hash])
-    .then(async data => {
-      res.render('pages/login', {status: 200, message: 'Success'});
-      return
-    })
-    .catch(err => {
-      res.render('pages/register', {status: 201, message: 'Username taken'});
-      return
-    });
+      .then(async data => {
+        res.render('pages/login', { status: 200, message: 'Success' });
+        return
+      })
+      .catch(err => {
+        res.render('pages/register', { status: 201, message: 'Username taken' });
+        return
+      });
   }
-  
 })
-
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
   db.one(query)
-  .then(async user => {
-    const userID = await user.userid;
-    res.status(200);
-    res.json({userID: userID, message: 'Success'})
-  })
-  .catch(err => {
-    res.status(201);
-    res.json({message: 'Invalid username'});
-  })
+    .then(async user => {
+      const userID = await user.userid;
+      res.status(200);
+      res.json({ userID: userID, message: 'Success' })
+    })
+    .catch(err => {
+      res.status(201);
+      res.json({ message: 'Invalid username' });
+    })
 });
-
-
 
 
 const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
@@ -194,16 +235,27 @@ app.get('/movies', async (req, res) => {
         const name = movie.title;
         const description = movie.overview;
         const imageUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null;
-        const year = parseInt(movie.release_date.substring(0, 4));
+        // year has some undefined integer values that are coming in
+        // const year = parseInt(movie.release_date.substring(0, 4));
+        const tyear = new Date(movie.release_date).getFullYear();
+        const year = (isNaN(tyear) ? new Date().getFullYear() : tyear);
 
         // Insert movie into database
-        await pool.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
+        // changed pool to db
+        try {
+          await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
+        } catch(error)
+        {
+          // console.log(error);
+        }
       }
     }
 
     res.status(200).send('Movies successfully stored in database');
   } catch (error) {
-
+    console.log(error)
+  }
+})
 
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
@@ -237,11 +289,13 @@ async function getSentimentScore(review) {
   }
 }
 
+
 //gets all tmdb reviews
 app.get('/tmdb-reviews', async (req, res) => {
   try {
     // Get all movies from database
-    const movies = await pool.query('SELECT * FROM Movies');
+    // changed pool to db
+    const movies = await db.query('SELECT * FROM Movies');
 
     // Loop through each movie and get reviews from TMDB API
     for (const movie of movies.rows) {
@@ -256,9 +310,12 @@ app.get('/tmdb-reviews', async (req, res) => {
             content: review.content
           }
         });
+        console.log(sentimentResponse);
 
         // Insert review and sentiment score into database
-        await pool.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
+        //changed pool to db
+        await db.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
+
 
       }
     }
@@ -270,14 +327,14 @@ app.get('/tmdb-reviews', async (req, res) => {
   }
 });
 
-
 // Endpoint to get Letterboxd reviews for movies already in database
 app.get('/letterboxd/reviews', async (req, res) => {
   try {
     // Get movies from database
-    const result = await pool.query('SELECT * FROM Movies');
+    // changed pool to db
+    const result = await db.query('SELECT * FROM Movies');
     const movies = result.rows;
-    
+
     // Loop through movies and get reviews
     for (const movie of movies) {
       // Make request to Letterboxd API to get reviews for movie
@@ -287,7 +344,8 @@ app.get('/letterboxd/reviews', async (req, res) => {
       for (const review of reviews) {
         const sentimentScore = await getSentimentScore(review.body);
         const values = [movie.movie_id, review.body, sentimentScore];
-        await pool.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
+        // changed pool to db
+        await db.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
       }
     }
     res.send('Letterboxd reviews successfully retrieved and stored.');
@@ -297,29 +355,16 @@ app.get('/letterboxd/reviews', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-          
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
   const query2 = `SELECT * FROM MovieReviews ORDER BY movie_id ;`
   db.any(query1)
-  .then(async movies => {
-    console.log(movies);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      console.log(movies);
+    })
+    .catch(err => {
+      console.log(err);
+    })
 })
 
 
@@ -374,6 +419,7 @@ async function sortReviewsBySentiment() {
     }
 
     if (sentimentScore < -0.33) {
+      // call chatGPT(badReviews)
       badReviews.push(row);
     } else if (sentimentScore >= -0.33 && sentimentScore <= 0.33) {
       mediumReviews.push(row);
@@ -385,7 +431,6 @@ async function sortReviewsBySentiment() {
   // Print the results
   console.log(`Bad reviews (${badReviews.length}):`);
   console.log(badReviews.map(review => review.id));
-
   console.log(`Medium reviews (${mediumReviews.length}):`);
   console.log(mediumReviews.map(review => review.id));
 
@@ -398,15 +443,10 @@ async function sortReviewsBySentiment() {
 
 sortReviewsBySentiment();
 
-
-
-
-
-
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-module.exports = app.listen(3000);
-// app.listen(3000);
+// module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
