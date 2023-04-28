@@ -409,6 +409,18 @@ async function sortReviewsBySentiment() {
 
 sortReviewsBySentiment();
 
+// const submitButton = document.querySelector('#submit')
+// async function chatGPTprompt(
+//   console.log('clicked')
+//   try {
+    
+//   } catch (error) {
+    
+//   }
+// )
+// submitButton.addEventListener(click, chatGPTprompt)
+
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
