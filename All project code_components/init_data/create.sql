@@ -20,7 +20,6 @@ CREATE TABLE TMDB_Reviews (
   FOREIGN KEY (movie_id) REFERENCES Movies(movie_id)
 );
 
-
 CREATE TABLE Letterboxd_Reviews (
   review_id SERIAL PRIMARY KEY,
   movie_id INT,

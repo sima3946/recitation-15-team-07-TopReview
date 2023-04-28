@@ -80,6 +80,7 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
+
   try {
     const query = `SELECT * FROM Movies LIMIT 6;`
   db.any(query)
@@ -147,26 +148,26 @@ app.get('/profile', (req, res) => {
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
-    .then(async user => {
-      const match = await bcrypt.compare(req.body.password, user.password)
-      if (req.body.password == '' || req.body.password == 'undefined') {
-        console.log("no password");
-      }
-      else if (match) {
-        req.session.user = user;
-        req.session.save();
-        res.redirect('/home');
-      }
-      else {
-        res.status(201).json({ message: 'Invalid input' });
-      }
-    })
-    .catch(err => {
-      if (err.code == 0) {
-        res.render("pages/login");
-      }
-      return console.log(err);
-    });
+  .then(async user => {
+    const match = await bcrypt.compare(req.body.password, user.password)
+    if (req.body.password == '' || req.body.password == 'undefined') {
+      console.log("no password");
+    }
+    else if (match) {
+      req.session.user = user;
+      req.session.save();
+      res.redirect('/home');
+    }
+    else {
+      res.status(201).json({message: 'Invalid input'});
+    }
+  })
+  .catch(err => {
+    if (err.code == 0) {
+      res.render("pages/login");
+    }
+    return console.log(err);
+  });
 });
 
 app.get('/register', (req, res) => {
@@ -315,6 +316,7 @@ app.get('/tmdb-reviews', async (req, res) => {
         //changed pool to db
         await db.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
 
+
       }
     }
 
@@ -352,7 +354,6 @@ app.get('/letterboxd/reviews', async (req, res) => {
     res.status(500).send('Error retrieving and storing Letterboxd reviews.');
   }
 });
-
 
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
@@ -396,7 +397,6 @@ async function sortReviewsBySentiment() {
   // Print the results
   console.log(`Bad reviews (${badReviews.length}):`);
   console.log(badReviews.map(review => review.id));
-
   console.log(`Medium reviews (${mediumReviews.length}):`);
   console.log(mediumReviews.map(review => review.id));
 
@@ -408,40 +408,6 @@ async function sortReviewsBySentiment() {
 }
 
 sortReviewsBySentiment();
-
-/* CHAT TESING */
-
-/*function Home (){
-  const [movieInput, setMovieInput] = useState("");
-  const [result, setResult] = useState();
-  //This submit event will be for when the user selects the movie card on the homepage
-  async function onSubmit(event) {
-    event.preventDefault();
-    try {
-      const response = await fetch("/resources/js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ movie: movieInput }),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
-
-      setResult(data.result);
-      setMovieInput("");
-    } catch (error) {
-      // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
-    }
-  }
-  res.render('pages/reviews')
-};
-*/
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
