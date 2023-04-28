@@ -1,6 +1,3 @@
-// /**** CHAT TESING ****/
-// import { render } from "ejs";
-// import { useState } from "react";
 // *****************************************************
 // <!-- Section 1 : Import Dependencies -->
 // *****************************************************
@@ -13,7 +10,7 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const mysql = require('mysql');
 const fetch = require('node-fetch');
-const axios = require('axios'); // To make HTTP requests from our server.
+const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 // const openai = require('openai'); //Make http requests from our server to openai.
 
 // *****************************************************
@@ -45,7 +42,7 @@ db.connect()
 // <!-- Section 3 : App Settings -->
 // *****************************************************
 
-app.use( express.static( "resources" ) );
+app.use(express.static("resources"));
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
@@ -71,7 +68,7 @@ app.use(
 // All API routes go here
 
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 app.get('/', (req, res) => {
@@ -85,20 +82,20 @@ app.get('/login', (req, res) => {
 app.get('/home', (req, res) => {
   const query = `SELECT * FROM Movies LIMIT 6`
   db.any(query)
-  .then(async movies => {
-    let titles = ['', '', '', '', '', '']
-    let image_urls = ['', '', '', '', '', '']
-    let movie_ids = ['', '', '', '', '', '']
-    for (let i = 0; i < 6; i++) {
-      titles[i] = movies[i].name
-      image_urls[i] = movies[i].image_url
-      movie_ids[i] = movies[i].movie_id
-    }
-    res.render("pages/home", {names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success'});
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      let titles = ['', '', '', '', '', '']
+      let image_urls = ['', '', '', '', '', '']
+      let movie_ids = ['', '', '', '', '', '']
+      for (let i = 0; i < 6; i++) {
+        // titles[i] = movies[i].name
+        // image_urls[i] = movies[i].image_url
+        // movie_ids[i] = movies[i].movie_id
+      }
+      res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
+    })
+    .catch(err => {
+      console.log(err);
+    })
 });
 
 app.get('/review', (req, res) => {
@@ -120,18 +117,18 @@ app.get('/review', (req, res) => {
   const queryReviews = `SELECT * FROM MovieReviews WHERE movie_id = '${movieID}';`
 
   db.any(queryMovies)
-  .then(dataMovies => {
-    db.any(queryReviews)
-    .then(dataReviews => {
-      res.render("pages/review", {movie: dataMovies, reviews: dataReviews})
+    .then(dataMovies => {
+      db.any(queryReviews)
+        .then(dataReviews => {
+          res.render("pages/review", { movie: dataMovies, reviews: dataReviews })
+        })
+        .catch(err2 => {
+          console.log(err2)
+        })
     })
-    .catch(err2 => {
-      console.log(err2)
+    .catch(err1 => {
+      console.log(err1)
     })
-  })
-  .catch(err1 => {
-    console.log(err1)
-  })
 })
 
 app.get('/profile', (req, res) => {
@@ -144,26 +141,26 @@ app.get('/profile', (req, res) => {
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
-  .then(async user => {
-    const match = await bcrypt.compare(req.body.password, user.password)
-    if (req.body.password == '' || req.body.password == 'undefined') {
-      console.log("no password");
-    }
-    else if (match) {
-      req.session.user = user;
-      req.session.save();
-      res.redirect('/home');
-    }
-    else {
-      res.status(201).json({message: 'Invalid input'});
-    }
-  })
-  .catch(err => {
-    if (err.code == 0) {
-      res.render("pages/login");
-    }
-    return console.log(err);
-  });
+    .then(async user => {
+      const match = await bcrypt.compare(req.body.password, user.password)
+      if (req.body.password == '' || req.body.password == 'undefined') {
+        console.log("no password");
+      }
+      else if (match) {
+        req.session.user = user;
+        req.session.save();
+        res.redirect('/home');
+      }
+      else {
+        res.status(201).json({ message: 'Invalid input' });
+      }
+    })
+    .catch(err => {
+      if (err.code == 0) {
+        res.render("pages/login");
+      }
+      return console.log(err);
+    });
 });
 
 app.get('/register', (req, res) => {
@@ -178,34 +175,34 @@ app.post('/register', async (req, res) => {
   const username = await req.body.username;
   const query = "INSERT INTO users (username, password) values ($1, $2);"
   if (req.body.password == '') {
-    res.status(201).json({message: 'No input'})
+    res.status(201).json({ message: 'No input' })
     return
   }
   else {
     db.any(query, [username, hash])
-    .then(async data => {
-      res.render('pages/login', {status: 200, message: 'Success'});
-      return
-    })
-    .catch(err => {
-      res.render('pages/register', {status: 201, message: 'Username taken'});
-      return
-    });
+      .then(async data => {
+        res.render('pages/login', { status: 200, message: 'Success' });
+        return
+      })
+      .catch(err => {
+        res.render('pages/register', { status: 201, message: 'Username taken' });
+        return
+      });
   }
 })
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
   db.one(query)
-  .then(async user => {
-    const userID = await user.userid;
-    res.status(200);
-    res.json({userID: userID, message: 'Success'})
-  })
-  .catch(err => {
-    res.status(201);
-    res.json({message: 'Invalid username'});
-  })
+    .then(async user => {
+      const userID = await user.userid;
+      res.status(200);
+      res.json({ userID: userID, message: 'Success' })
+    })
+    .catch(err => {
+      res.status(201);
+      res.json({ message: 'Invalid username' });
+    })
 });
 
 
@@ -234,7 +231,8 @@ app.get('/movies', async (req, res) => {
         const year = parseInt(movie.release_date.substring(0, 4));
 
         // Insert movie into database
-        await pool.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
+        // changed pool to db
+        await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
       }
     }
 
@@ -281,7 +279,8 @@ async function getSentimentScore(review) {
 app.get('/tmdb-reviews', async (req, res) => {
   try {
     // Get all movies from database
-    const movies = await pool.query('SELECT * FROM Movies');
+    // changed pool to db
+    const movies = await db.query('SELECT * FROM Movies');
 
     // Loop through each movie and get reviews from TMDB API
     for (const movie of movies.rows) {
@@ -299,7 +298,8 @@ app.get('/tmdb-reviews', async (req, res) => {
         console.log(sentimentResponse);
 
         // Insert review and sentiment score into database
-        await pool.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
+        //changed pool to db
+        await db.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
 
       }
     }
@@ -315,9 +315,10 @@ app.get('/tmdb-reviews', async (req, res) => {
 app.get('/letterboxd/reviews', async (req, res) => {
   try {
     // Get movies from database
-    const result = await pool.query('SELECT * FROM Movies');
+    // changed pool to db
+    const result = await db.query('SELECT * FROM Movies');
     const movies = result.rows;
-    
+
     // Loop through movies and get reviews
     for (const movie of movies) {
       // Make request to Letterboxd API to get reviews for movie
@@ -327,7 +328,8 @@ app.get('/letterboxd/reviews', async (req, res) => {
       for (const review of reviews) {
         const sentimentScore = await getSentimentScore(review.body);
         const values = [movie.movie_id, review.body, sentimentScore];
-        await pool.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
+        // changed pool to db
+        await db.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
       }
     }
     res.send('Letterboxd reviews successfully retrieved and stored.');
@@ -337,19 +339,20 @@ app.get('/letterboxd/reviews', async (req, res) => {
   }
 });
 
-          
+
 app.get('/reviewInfo', async (req, res) => {
   const query1 = `SELECT * FROM MovieReviews`;
   const query2 = `SELECT * FROM MovieReviews ORDER BY movie_id ;`
   db.any(query1)
-  .then(async movies => {
-    console.log(movies);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then(async movies => {
+      console.log(movies);
+    })
+    .catch(err => {
+      console.log(err);
+    })
 })
 
+/*
 async function sortReviewsBySentiment() {
   // Connect to the database and retrieve the reviews
   const connection = await mysql.createConnection(dbConfig);
@@ -390,42 +393,43 @@ async function sortReviewsBySentiment() {
   await connection.end();
 }
 
-// sortReviewsBySentiment();
+sortReviewsBySentiment();
+*/
 
 
-/**** CHAT TESING ****/
+/* CHAT TESING */
 
-// function Home ()
-// {
-//   const [movieInput, setMovieInput] = useState("");
-//   const [result, setResult] = useState();
-//   //This submit event will be for when the user selects the movie card on the homepage
-//   async function onSubmit(event) {
-//     event.preventDefault();
-//     try {
-//       const response = await fetch("/resources/js", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ movie: movieInput }),
-//       });
+/*function Home (){
+  const [movieInput, setMovieInput] = useState("");
+  const [result, setResult] = useState();
+  //This submit event will be for when the user selects the movie card on the homepage
+  async function onSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await fetch("/resources/js", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ movie: movieInput }),
+      });
 
-//       const data = await response.json();
-//       if (response.status !== 200) {
-//         throw data.error || new Error(`Request failed with status ${response.status}`);
-//       }
+      const data = await response.json();
+      if (response.status !== 200) {
+        throw data.error || new Error(`Request failed with status ${response.status}`);
+      }
 
-//       setResult(data.result);
-//       setMovieInput("");
-//     } catch (error) {
-//       // Consider implementing your own error handling logic here
-//       console.error(error);
-//       alert(error.message);
-//     }
-//   }
-//   res.render('pages/reviews')
-// };
+      setResult(data.result);
+      setMovieInput("");
+    } catch (error) {
+      // Consider implementing your own error handling logic here
+      console.error(error);
+      alert(error.message);
+    }
+  }
+  res.render('pages/reviews')
+};
+*/
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
