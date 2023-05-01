@@ -1,7 +1,7 @@
 <%- include ('../partials/header') %>
 <div class="container-fluid gradient-custom flex">
     <div class="column-left-sm">
-        <a class="btn back-btn bg-dark" href="/home" role="button">
+        <a class="btn bg-dark" href="/home" role="button">
             <i class="bi bi-arrow-return-left" style="color: white;"></i>
         </a>
     </div>
@@ -12,22 +12,31 @@
     </div>
     <div class="column-right">
         <div class="card card-review bg-dark">
-            <div class="card-head" style="float:left">
-                <h2 class="fw-bold mb-2 text-uppercase title text">TMDB</h2>
+            <h2 class="fw-bold mb-2 text-uppercase title text"><%= dbr %></h2>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Positive</h5>
+                    <p class="card-text">
+                        <%= pos %>
+                    </p>
+                </div>
             </div>
-            <div class="card-head" style="float: right;">
-                <a class="btn btn-primary dd-button" style="background-color: black;" data-bs-toggle="collapse" href="#collapseText" role="button" aria-expanded="false" aria-controls="collapseText">
-                    <i class="bi bi-arrow-down dropdown-arrow" style="color: white;"></i>
-                </a>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Neutral</h5>
+                    <p class="card-text">
+                        <%= nrl %>
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="collapse" id="collapseText">
-            <div class="card card-body bg-dark" style="color: white;">
-                This is the expanded text
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Negative</h5>
+                    <p class="card-text">
+                        <%= neg %>
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="card card-review bg-dark">
-
         </div>
     </div>
 </div>
