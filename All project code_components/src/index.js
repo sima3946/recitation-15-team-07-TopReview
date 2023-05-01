@@ -70,8 +70,11 @@ app.use(
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
 });
+
 const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8';
-app.get('/', async (req, res) => {
+
+// // Endpoint to retrieve movies from TMDB and store them in the Movies table
+app.get('/movies', async (req, res) => {
   try {
     // Make initial API call to get total number of pages
     const initialResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=1`);
@@ -105,10 +108,22 @@ app.get('/', async (req, res) => {
         }
       }
     }
-    res.status(200).send('Movies successfully stored in database');
+
+    //res.status(200).send('Movies successfully stored in database');
+    console.log("success in movie database");
   } catch (error) {
     console.log(error)
   }
+})
+
+async function loadMovies(){
+  let response = await fetch('http://localhost:3000/movies');
+  let data = response.json();
+  return data;
+}
+
+app.get('/', async (req, res) => {
+  res.render("pages/login");
 });
 
 app.get('/login', (req, res) => {
@@ -208,6 +223,8 @@ app.post('/login', async (req, res) => {
 
 app.get('/register', (req, res) => {
   res.render("pages/register");
+  loadMovies().then(data => console.log(data));
+  console.log('here');
 });
 
 app.post('/register', async (req, res) => {
@@ -224,6 +241,7 @@ app.post('/register', async (req, res) => {
   else {
     db.any(query, [username, hash])
       .then(async data => {
+        console.log("Success at login!")
         res.render('pages/login', { status: 200, message: 'Success' });
         return
       })
@@ -251,47 +269,6 @@ app.post('/userID', async (req, res) => {
 
 // const tmdb_apiKey = '32e03fbc1ac17bae20d12c4548e26ce8'; // Gunhi's TMDb API key
 
-// // Endpoint to retrieve movies from TMDB and store them in the Movies table
-// app.get('/movies', async (req, res) => {
-//   try {
-//     // Make initial API call to get total number of pages
-//     const initialResponse = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=1`);
-//     const totalPages = initialResponse.data.total_pages;
-//     const moviesPerPage = initialResponse.data.results.length;
-
-//     // Loop through all pages of results and store movies in database
-//     for (let page = 1; page <= totalPages; page++) {
-//       const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=${page}`);
-//       const movies = response.data.results;
-
-//       // Insert each movie into the Movies table
-//       for (let i = 0; i < movies.length; i++) {
-//         const movie = movies[i];
-//         const movieId = movie.id;
-//         const name = movie.title;
-//         const description = movie.overview;
-//         const imageUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null;
-//         // year has some undefined integer values that are coming in
-//         // const year = parseInt(movie.release_date.substring(0, 4));
-//         const tyear = new Date(movie.release_date).getFullYear();
-//         const year = (isNaN(tyear) ? new Date().getFullYear() : tyear);
-
-//         // Insert movie into database
-//         // changed pool to db
-//         try {
-//           await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
-//         } catch(error)
-//         {
-//           // console.log(error);
-//         }
-//       }
-//     }
-
-//     res.status(200).send('Movies successfully stored in database');
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
 
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
