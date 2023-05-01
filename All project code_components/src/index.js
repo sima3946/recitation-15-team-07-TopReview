@@ -1,9 +1,9 @@
 // *****************************************************
 // <!-- Section 1 : Import Dependencies -->
 // *****************************************************
-
 const express = require('express'); // To build an application server or API
 const app = express();
+app.use(express.json())
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
@@ -11,10 +11,18 @@ const bcrypt = require('bcrypt'); //  To hash passwords
 const mysql = require('mysql');
 const fetch = require('node-fetch');
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
-// const openai = require('openai'); //Make http requests from our server to openai.
+const { Configuration, OpenAIApi } = require('openai'); // Make http requests from our server to openai.
 
 // *****************************************************
-// <!-- Section 2 : Connect to DB -->
+// <!-- Section 2A : Connect to OpenAI API -->
+// *****************************************************
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+});
+const openai = new OpenAIApi(configuration);//connects to the openai interface
+
+// *****************************************************
+// <!-- Section 2B : Connect to DB -->
 // *****************************************************
 
 // database configuration
@@ -83,21 +91,21 @@ app.get('/home', (req, res) => {
 
   try {
     const query = `SELECT * FROM Movies LIMIT 6;`
-  db.any(query)
-    .then(async movies => {
-      let titles = ['', '', '', '', '', '']
-      let image_urls = ['', '', '', '', '', '']
-      let movie_ids = ['', '', '', '', '', '']
-      for (let i = 0; i < 6; i++) {
-        titles[i] = movies[i].name;
-        image_urls[i] = movies[i].image_url;
-        movie_ids[i] = movies[i].movie_id;
-      }
-      res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
-    })
-    .catch(err => {
-      console.log(err);
-    })
+    db.any(query)
+      .then(async movies => {
+        let titles = ['', '', '', '', '', '']
+        let image_urls = ['', '', '', '', '', '']
+        let movie_ids = ['', '', '', '', '', '']
+        for (let i = 0; i < 6; i++) {
+          titles[i] = movies[i].name;
+          image_urls[i] = movies[i].image_url;
+          movie_ids[i] = movies[i].movie_id;
+        }
+        res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
+      })
+      .catch(err => {
+        console.log(err);
+      })
   } catch (error) {
     console.log(error);
   }
@@ -123,19 +131,71 @@ app.get('/review', (req, res) => {
 
   db.any(queryMovies)
     .then(dataMovies => {
-      console.log('dataMovies'+dataMovies[0].name)
-      db.any(queryReviews)
-        .then(dataReviews => {
-          console.log('dataMovies'+dataReviews)
-          res.render("pages/review", { movie: dataMovies, reviews: dataReviews })
+      snd = '';
+      pos = 'NONE';
+      nrl = 'NONE';
+      neg = 'NONE';
+      dbr = 'TMDB and Letterbox';
+
+      snd = 'Summarize the positive reviews from ' + dbr + ' of '+ dataMovies[0].name;
+      openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: `${snd}`, // message
+        temperature: 0, // Higher values means the model will take more risks.
+        max_tokens: 3000, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
+        top_p: 1, // alternative to sampling with temperature, called nucleus sampling
+        frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
+        presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+      })
+      .then((response) => {
+        pos = response.data.choices[0].text;
+        snd = 'Summarize the neutral reviews from ' + dbr + ' of '+ dataMovies[0].name;
+        openai.createCompletion({
+          model: "text-davinci-003",
+          prompt: `${snd}`, // message
+          temperature: 0, // Higher values means the model will take more risks.
+          max_tokens: 3000, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
+          top_p: 1, // alternative to sampling with temperature, called nucleus sampling
+          frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
+          presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
         })
-        .catch(err2 => {
-          console.log(err2)
+        .then((response) => {
+          nrl = response.data.choices[0].text;
+          snd = 'Summarize the negative reviews from ' + dbr + ' of '+ dataMovies[0].name;
+          openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: `${snd}`, // message
+            temperature: 0, // Higher values means the model will take more risks.
+            max_tokens: 3000, // The maximum number of tokens to generate in the completion. Most models have a context length of 2048 tokens (except for the newest models, which support 4096).
+            top_p: 1, // alternative to sampling with temperature, called nucleus sampling
+            frequency_penalty: 0.5, // Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
+            presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
+          })
+          .then((response) => {
+            neg = response.data.choices[0].text;
+            db.any(queryReviews)
+            .then(dataReviews => {
+              res.render("pages/review", { movie: dataMovies, dbd: dbr, positive: pos, neutral: nrl, negative: neg });
+            })
+            .catch(err2 => {
+              console.log(err2)
+            })
+          })
+          .catch(err => {
+            console.error(err.message);
+          })
+        })
+        .catch(err => {
+          console.error(err.message);
         })
     })
-    .catch(err1 => {
-      console.log(err1)
+    .catch(err => {
+      console.error(err.message);
     })
+  })
+  .catch(err1 => {
+    console.log(err1)
+  })
 })
 
 app.get('/profile', (req, res) => {
@@ -148,26 +208,26 @@ app.get('/profile', (req, res) => {
 app.post('/login', async (req, res) => {
   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
   db.one(query)
-  .then(async user => {
-    const match = await bcrypt.compare(req.body.password, user.password)
-    if (req.body.password == '' || req.body.password == 'undefined') {
-      console.log("no password");
-    }
-    else if (match) {
-      req.session.user = user;
-      req.session.save();
-      res.render('pages/home', {status: 200, message: 'Success'});
-    }
-    else {
-      res.status(201).json({message: 'Invalid input'});
-    }
-  })
-  .catch(err => {
-    if (err.code == 0) {
-      res.render("pages/login");
-    }
-    return console.log(err);
-  });
+    .then(async user => {
+      const match = await bcrypt.compare(req.body.password, user.password)
+      if (req.body.password == '' || req.body.password == 'undefined') {
+        console.log("no password");
+      }
+      else if (match) {
+        req.session.user = user;
+        req.session.save();
+        res.render('pages/home', { status: 200, message: 'Success' });
+      }
+      else {
+        res.status(201).json({ message: 'Invalid input' });
+      }
+    })
+    .catch(err => {
+      if (err.code == 0) {
+        res.render("pages/login");
+      }
+      return console.log(err);
+    });
 });
 
 app.get('/register', (req, res) => {
@@ -244,8 +304,7 @@ app.get('/movies', async (req, res) => {
         // changed pool to db
         try {
           await db.query('INSERT INTO Movies (movie_id, name, description, image_url, year) VALUES ($1, $2, $3, $4, $5)', [movieId, name, description, imageUrl, year]);
-        } catch(error)
-        {
+        } catch (error) {
           // console.log(error);
         }
       }
@@ -367,7 +426,6 @@ app.get('/reviewInfo', async (req, res) => {
     })
 })
 
-
 app.get('/scores', async(req, res) => {
   try{
     
@@ -378,11 +436,10 @@ app.get('/scores', async(req, res) => {
     for (const row of rows) {
       const movieId = row.id;
       const reviews = JSON.parse(row.reviews);
-  
+
       for (const review of reviews) {
         const reviewText = review.text;
         const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
-  
         try {
           const response = await axios.get(apiUrl);
           const sentiment = response.data.sentiment;

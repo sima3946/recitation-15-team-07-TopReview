@@ -4,8 +4,10 @@ Footer Style Guide
 
 .footer {
     position: sticky;
+    display: flex;
     width: auto;
     height: auto;
+    padding-top: 1rem;
     background-color: rgba(9, 25, 52, 1);
     border: medium solid rgba(37, 117, 252, 1);
     color: aliceblue;
@@ -16,6 +18,10 @@ Footer Style Guide
 
 .company {
     position: sticky;
+    display: flex;
+    padding-bottom: 1rem;
+    width: auto;
+    height: auto;
     border-bottom: medium solid rgba(37, 117, 252, 1);
     border-right: medium solid rgba(37, 117, 252, 1);
     border-left: medium solid rgba(37, 117, 252, 1);
