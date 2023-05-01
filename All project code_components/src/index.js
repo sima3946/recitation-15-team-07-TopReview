@@ -316,6 +316,7 @@ app.get('/movies', async (req, res) => {
   }
 })
 
+<<<<<<< Updated upstream
 // API Key for Google Cloud Sentiment Analysis (gunhi)
 const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
 
@@ -334,6 +335,54 @@ async function getSentimentScore(review) {
       headers: {
         'Content-Type': 'application/json',
       },
+=======
+// API Key for Google Cloud Sentiment Analysis 
+const sentiment_api_key = 'AIzaSyBFJjk7mor-E9HL4hMyaFcRI0mdhLCZaTg';
+
+// helper function to get sentiment score from Google Cloud's sentiment analysis API
+// async function getSentimentScore(review) {
+//   try {
+//     const response = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${sentiment_api_key}`, {
+//       method: 'POST',
+//       body: JSON.stringify({
+//         document: {
+//           type: 'PLAIN_TEXT',
+//           content: review,
+//         },
+//         encodingType: 'UTF8',
+//       }),
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`Error: ${response.status} ${response.statusText}`);
+//     }
+
+//     const result = await response.json();
+//     return result.documentSentiment.score;
+//   } catch (error) {
+//     console.error(error);
+//     throw new Error('Error retrieving sentiment score');
+//   }
+// }
+
+async function getSentimentScoreEdit(movieReview) {
+  try {
+    const response = await fetch(`https://language.googleapis.com/v1/documents:analyzeSentiment?key=${sentiment_api_key}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'document': {
+          'type': 'PLAIN_TEXT',
+          'content': movieReview
+        },
+        'encodingType': 'UTF8',
+      })
+>>>>>>> Stashed changes
     });
 
     if (!response.ok) {
@@ -341,10 +390,18 @@ async function getSentimentScore(review) {
     }
 
     const result = await response.json();
+<<<<<<< Updated upstream
     return result.documentSentiment.score;
   } catch (error) {
     console.error(error);
     throw new Error('Error retrieving sentiment score');
+=======
+    return result.documentSentiment.score
+
+  } catch (error) {
+    console.error(error);
+    throw new Error('Cannot retrieve sentiment score for reviews');
+>>>>>>> Stashed changes
   }
 }
 
@@ -375,7 +432,10 @@ app.get('/tmdb-reviews', async (req, res) => {
         //changed pool to db
         await db.query('INSERT INTO TMDB_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', [movie.movie_id, review.content, sentimentResponse.data.documentSentiment.score]);
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
       }
     }
 
@@ -401,7 +461,11 @@ app.get('/letterboxd/reviews', async (req, res) => {
       const reviews = response.data.items;
       // Loop through reviews and insert into database with sentiment score
       for (const review of reviews) {
+<<<<<<< Updated upstream
         const sentimentScore = await getSentimentScore(review.body);
+=======
+        const sentimentScore = await getSentimentScoreEdit(review.body);
+>>>>>>> Stashed changes
         const values = [movie.movie_id, review.body, sentimentScore];
         // changed pool to db
         await db.query('INSERT INTO Letterboxd_Reviews (movie_id, review, sentiment_score) VALUES ($1, $2, $3)', values);
