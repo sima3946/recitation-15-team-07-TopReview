@@ -426,13 +426,12 @@ app.get('/reviewInfo', async (req, res) => {
     })
 })
 
-
-app.get('/scores', async (req, res) => {
-  try {
-
+app.get('/scores', async(req, res) => {
+  try{
+    
     const connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute('SELECT id, reviews FROM movies');
-
+  
     // Loop through the movies and their reviews, and make an API call for each review
     for (const row of rows) {
       const movieId = row.id;
@@ -441,7 +440,6 @@ app.get('/scores', async (req, res) => {
       for (const review of reviews) {
         const reviewText = review.text;
         const apiUrl = `${sentimentApiUrl}?text=${reviewText}`;
-
         try {
           const response = await axios.get(apiUrl);
           const sentiment = response.data.sentiment;
@@ -453,7 +451,7 @@ app.get('/scores', async (req, res) => {
         }
       }
     }
-  } catch (error) {
+  } catch(error) {
     console.error(error);
     res.status(500).send('Error giving reviews sentiment score');
   }
