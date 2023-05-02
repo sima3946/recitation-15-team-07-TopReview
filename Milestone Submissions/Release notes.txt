@@ -49,3 +49,16 @@ WEEK Three REPORT
 
 Movie Review and Movie API calls are officially done - databases are being loaded fully. Still working on trying to access movie reviews and movie review data to put in to chatGPT qury as well as group by sentiment score. Home page can now load movies and frontend looks presentable, still working on functionality to view cards individuall and put review information beside. Profile page is working and fully functional with user data that is stored in database via registration/login page.
 
+Week Four Release Notes:
+
+WEEK Four REPORT
+| Team Member | Number of Commits |
+| — | — |
+| Gunhi Kim | 14 |
+| Tyler Kloster | 17 |
+| Brandon Lehman | x |
+| Siranush Mazmandyan | 19 |
+| Alex Pham | 13 |
+| Kira Velez | 17 |
+
+Everythhing is pretty much complete. Still working on (debugging) correctly retrieving review data from SQL database and filtering it through ChatGPT API. Apart form that presentation deliverables are 85% done and now all that is left is to continue testing, polish up slight details on the front end and figure out who is presenting and delivering what according to the shared slides and "script". Also need to make sure website is fully functional in order to ensure demo during presentation is accurate and smooth.
