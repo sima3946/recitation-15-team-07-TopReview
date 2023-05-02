@@ -82,12 +82,14 @@ app.get('/movies', async (req, res) => {
     const moviesPerPage = initialResponse.data.results.length;
 
     // Loop through all pages of results and store movies in database
-    for (let page = 1; page <= totalPages; page++) {
+    for (let page = 1; page <= 100; page++) {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${tmdb_apiKey}&language=en-US&page=${page}`);
       const movies = response.data.results;
+      console.log('this is movie length')
+      console.log(movies.length);
 
       // Insert each movie into the Movies table
-      for (let i = 0; i < movies.length; i++) {
+      for (let i = 0; i < 10; i++) {
         const movie = movies[i];
         const movieId = movie.id;
         const name = movie.title;
@@ -116,11 +118,14 @@ app.get('/movies', async (req, res) => {
   }
 })
 
-async function loadMovies(){
-  let response = await fetch('http://localhost:3000/movies');
-  let data = response.json();
-  return data;
-}
+//function should be able to load and populate the movie database before the user logs into home
+// async function loadMovies(){
+//   let response = await fetch('http://localhost:3000/movies');
+//   let data = response.json();
+//   return data;
+// }
+
+// .then(data => console.log(data))
 
 app.get('/', async (req, res) => {
   res.render("pages/login");
@@ -130,6 +135,59 @@ app.get('/login', (req, res) => {
   res.render("pages/login");
 });
 
+app.post('/login', async (req, res) => {
+  const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+  db.one(query)
+  .then(async user => {
+    const match = await bcrypt.compare(req.body.password, user.password)
+    if (req.body.password == '' || req.body.password == 'undefined') {
+      console.log("no password");
+    }
+    else if (match) {
+      req.session.user = user;
+      req.session.save();
+      res.render('pages/home', {status: 200, message: 'Success'});
+    }
+    else {
+      res.status(201).json({message: 'Invalid input'});
+    }
+  })
+  .catch(err => {
+    if (err.code == 0) {
+      res.render("pages/login");
+    }
+    return console.log(err);
+  });
+});
+
+app.get('/register', (req, res) => {
+  res.render("pages/register");
+});
+
+app.post('/register', async (req, res) => {
+  if (req.body.password == '') {
+    password = null;
+  }
+  const hash = await bcrypt.hash(req.body.password, 10);
+  const username = await req.body.username;
+  const query = "INSERT INTO users (username, password) values ($1, $2);"
+  if (req.body.password == '') {
+    res.status(201).json({ message: 'No input' })
+    return
+  }
+  else {
+    db.any(query, [username, hash])
+      .then(async data => {
+        console.log("Success at login!")
+        res.render('pages/login', { status: 200, message: 'Success' });
+        return
+      })
+      .catch(err => {
+        res.render('pages/register', { status: 201, message: 'Username taken' });
+        return
+      });
+  }
+})
 app.get('/home', (req, res) => {
 
   try {
@@ -196,61 +254,61 @@ app.get('/profile', (req, res) => {
   });
 });
 
-app.post('/login', async (req, res) => {
-  const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
-  db.one(query)
-  .then(async user => {
-    const match = await bcrypt.compare(req.body.password, user.password)
-    if (req.body.password == '' || req.body.password == 'undefined') {
-      console.log("no password");
-    }
-    else if (match) {
-      req.session.user = user;
-      req.session.save();
-      res.render('pages/home', {status: 200, message: 'Success'});
-    }
-    else {
-      res.status(201).json({message: 'Invalid input'});
-    }
-  })
-  .catch(err => {
-    if (err.code == 0) {
-      res.render("pages/login");
-    }
-    return console.log(err);
-  });
-});
+// app.post('/login', async (req, res) => {
+//   const query = `SELECT * FROM users WHERE username = '${req.body.username}';`;
+//   db.one(query)
+//   .then(async user => {
+//     const match = await bcrypt.compare(req.body.password, user.password)
+//     if (req.body.password == '' || req.body.password == 'undefined') {
+//       console.log("no password");
+//     }
+//     else if (match) {
+//       req.session.user = user;
+//       req.session.save();
+//       res.render('pages/home', {status: 200, message: 'Success'});
+//     }
+//     else {
+//       res.status(201).json({message: 'Invalid input'});
+//     }
+//   })
+//   .catch(err => {
+//     if (err.code == 0) {
+//       res.render("pages/login");
+//     }
+//     return console.log(err);
+//   });
+// });
 
-app.get('/register', (req, res) => {
-  res.render("pages/register");
-  loadMovies().then(data => console.log(data));
-  console.log('here');
-});
+// app.get('/register', (req, res) => {
+//   res.render("pages/register");
+//   loadMovies().then(data => console.log(data));
+//   console.log('here');
+// });
 
-app.post('/register', async (req, res) => {
-  if (req.body.password == '') {
-    password = null;
-  }
-  const hash = await bcrypt.hash(req.body.password, 10);
-  const username = await req.body.username;
-  const query = "INSERT INTO users (username, password) values ($1, $2);"
-  if (req.body.password == '') {
-    res.status(201).json({ message: 'No input' })
-    return
-  }
-  else {
-    db.any(query, [username, hash])
-      .then(async data => {
-        console.log("Success at login!")
-        res.render('pages/login', { status: 200, message: 'Success' });
-        return
-      })
-      .catch(err => {
-        res.render('pages/register', { status: 201, message: 'Username taken' });
-        return
-      });
-  }
-})
+// app.post('/register', async (req, res) => {
+//   if (req.body.password == '') {
+//     password = null;
+//   }
+//   const hash = await bcrypt.hash(req.body.password, 10);
+//   const username = await req.body.username;
+//   const query = "INSERT INTO users (username, password) values ($1, $2);"
+//   if (req.body.password == '') {
+//     res.status(201).json({ message: 'No input' })
+//     return
+//   }
+//   else {
+//     db.any(query, [username, hash])
+//       .then(async data => {
+//         console.log("Success at login!")
+//         res.render('pages/login', { status: 200, message: 'Success' });
+//         return
+//       })
+//       .catch(err => {
+//         res.render('pages/register', { status: 201, message: 'Username taken' });
+//         return
+//       });
+//   }
+// })
 
 app.post('/userID', async (req, res) => {
   const query = `SELECT userID FROM users WHERE username = '${req.body.username}';`
