@@ -34,7 +34,7 @@ Notes:
         APIs are not promised, HOWEVER WE HAVE TO WORK ON THEM 
 
 Meeting #2
-Date: 04/12/2023
+Date: 04/19/2023
 Time: 11:15 - 11:30 AM
 Attendees: Siranush, Kira, Gunhi, Tyler, Alex(Came in for a couple seconds)
 
@@ -71,3 +71,42 @@ Notes:
     PROJECT GOALS FOR NEXT WEEK:
         All back-end is to be done by the next Meeting
         Figure out the next API to use
+
+
+Meeting #3
+Date: 04/26/2023
+Time: 11:15 - 11:30 AM
+Attendees: Siranush, Kira, Gunhi, Tyler
+
+Notes:
+    Update project board, 
+        epics: need to make proper epics
+        user acceptance: acceptance period is fixed from last week
+        criteria: acceptance criteria is fixed, continually add as you post more epics.
+
+    Release Notes:
+        Need to update release notes for new week and new changes made to the project.
+
+    Scribe:
+        Names, number of commits, which commit is the most significant
+
+        Kira, ChatGPT API implementation
+
+        Sira, Profile Page partials and layout implementation
+
+        Tyler, Home page (cards) and front-end functionality (able to click on cards)
+
+        Gunhi, added LetterBoxd API route. 
+        
+        Alex, Google Cloud API Sentiment analysis configuration.
+
+        Brandon, (no longer in group)
+
+    Individual Contribution:
+        How well do you communicate with everyone in the team?
+        How often do you update the project board?
+            This is changing the status of what you are working on within the project board
+        How well are you documenting your code?
+
+    PROJECT GOALS FOR NEXT WEEK:
+        Begin testing and work on presentation final deliverables content, start practicing and rehearsing presentation slides and "script".
