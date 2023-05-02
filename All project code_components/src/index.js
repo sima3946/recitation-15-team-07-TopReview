@@ -146,7 +146,27 @@ app.post('/login', async (req, res) => {
     else if (match) {
       req.session.user = user;
       req.session.save();
-      res.render('pages/home', {status: 200, message: 'Success'});
+      try {
+        const query = `SELECT * FROM Movies LIMIT 6;`
+        db.any(query)
+        .then(async movies => {
+          let titles = ['', '', '', '', '', '']
+          let image_urls = ['', '', '', '', '', '']
+          let movie_ids = ['', '', '', '', '', '']
+          for (let i = 0; i < 6; i++) {
+            titles[i] = movies[i].name;
+            image_urls[i] = movies[i].image_url;
+            movie_ids[i] = movies[i].movie_id;
+          }
+          res.render("pages/home", { names: titles, urls: image_urls, ids: movie_ids, status: 200, message: 'Success' });
+        })
+        .catch(err => {
+          console.log(err);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+      //res.render('pages/home', {status: 200, message: 'Success'}); //need to pass the movie ids into here
     }
     else {
       res.status(201).json({message: 'Invalid input'});
