@@ -524,6 +524,11 @@ async function sortReviewsBySentiment() {
 
 sortReviewsBySentiment();
 
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.render('pages/login', {message: "Logged out successfully"});
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************

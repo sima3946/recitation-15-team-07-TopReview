@@ -1,20 +1,22 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/navigationBar') %>
 
-<div class="card bigCard gradient-custom">
-    <div class="container">
-        <div class="card bg-dark">
-            <div class="card-body">
-                <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
-                <div class="slider">
-                    <a href="/review?id=<%= ids[0] %>"><img src="<%= urls[0] %>"></a>
-                    <a href="/review?id=<%= ids[1] %>"><img src="<%= urls[1] %>"></a>
-                    <a href="/review?id=<%= ids[2] %>"><img src="<%= urls[2] %>"></a>
-                    <a href="/review?id=<%= ids[3] %>"><img src="<%= urls[3] %>"></a>
-                    <a href="/review?id=<%= ids[4] %>"><img src="<%= urls[4] %>"></a>
+<main>
+    <div class="card bigCard gradient-custom">
+        <div class="container">
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
+                    <div class="slider">
+                        <a href="/review?id=<%= ids[0] %>"><img src="<%= urls[0] %>"></a>
+                        <a href="/review?id=<%= ids[1] %>"><img src="<%= urls[1] %>"></a>
+                        <a href="/review?id=<%= ids[2] %>"><img src="<%= urls[2] %>"></a>
+                        <a href="/review?id=<%= ids[3] %>"><img src="<%= urls[3] %>"></a>
+                        <a href="/review?id=<%= ids[4] %>"><img src="<%= urls[4] %>"></a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 <%- include ('../partials/footer') %>
