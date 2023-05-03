@@ -2,11 +2,14 @@
 <%- include ('../partials/navigationBar') %>
 
 <main>
-    <div class="card bigCard gradient-custom">
+    <div class="gradient-custom">
+        <br class="v-space">
         <div class="container">
             <div class="card bg-dark">
-                <div class="card-body">
+                <div class="card-title">
                     <h2 class="fw-bold mb-2 text-uppercase title">Popular Movies</h2>
+                </div>
+                <div class="card-body">
                     <div class="slider">
                         <a href="/review?id=<%= ids[0] %>"><img src="<%= urls[0] %>"></a>
                         <a href="/review?id=<%= ids[1] %>"><img src="<%= urls[1] %>"></a>
@@ -17,6 +20,24 @@
                 </div>
             </div>
         </div>
+        <br class="v-space">
+        <div class="container">
+            <div class="card bg-dark">
+                <div class="card-title">
+                    <h2 class="fw-bold mb-2 text-uppercase title">Recent Movies</h2>
+                </div>
+                <div class="card-body">
+                    <div class="slider">
+                        <a href="/review?id=<%= ids[5] %>"><img src="<%= urls[5] %>"></a>
+                        <a href="/review?id=<%= ids[6] %>"><img src="<%= urls[6] %>"></a>
+                        <a href="/review?id=<%= ids[7] %>"><img src="<%= urls[7] %>"></a>
+                        <a href="/review?id=<%= ids[8] %>"><img src="<%= urls[8] %>"></a>
+                        <a href="/review?id=<%= ids[9] %>"><img src="<%= urls[9] %>"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br class="v-space">
     </div>
 </main>
 <%- include ('../partials/footer') %>

@@ -100,3 +100,8 @@ Home Page Style Guide (Not in Use; need to figure this out)
     margin-left: 2vw;
     margin-top: 1vh;
 }
+
+.v-space {
+    height: 10%;
+    width: 100%;
+}

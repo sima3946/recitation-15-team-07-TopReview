@@ -211,13 +211,13 @@ app.post('/register', async (req, res) => {
 app.get('/home', (req, res) => {
 
   try {
-    const query = `SELECT * FROM Movies LIMIT 6;`
+    const query = `SELECT * FROM Movies LIMIT 10;`
     db.any(query)
       .then(async movies => {
         let titles = ['', '', '', '', '', '']
         let image_urls = ['', '', '', '', '', '']
         let movie_ids = ['', '', '', '', '', '']
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 10; i++) {
           titles[i] = movies[i].name;
           image_urls[i] = movies[i].image_url;
           movie_ids[i] = movies[i].movie_id;
@@ -246,12 +246,14 @@ app.get('/review', (req, res) => {
       movieID += req.url[i]
     }
   }
+  console.log(movieID)
 
   const queryMovies = `SELECT * FROM movies WHERE movie_id = '${movieID}';`
   const queryReviews = `SELECT * FROM TMDB_Reviews WHERE movie_id = '${movieID}';`
 
   db.any(queryMovies)
     .then(dataMovies => {
+      console.log("1")
       snd = '';
       pos = 'NONE';
       nrl = 'NONE';
@@ -269,6 +271,7 @@ app.get('/review', (req, res) => {
         presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
       })
       .then((response) => {
+        console.log("2")
         pos = response.data.choices[0].text;
         snd = 'Summarize the neutral reviews from ' + dbr + ' of '+ dataMovies[0].name;
         openai.createCompletion({
@@ -281,6 +284,7 @@ app.get('/review', (req, res) => {
           presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
         })
         .then((response) => {
+          console.log("3")
           nrl = response.data.choices[0].text;
           snd = 'Summarize the negative reviews from ' + dbr + ' of '+ dataMovies[0].name;
           openai.createCompletion({
@@ -293,9 +297,11 @@ app.get('/review', (req, res) => {
             presence_penalty: 0, // Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
           })
           .then((response) => {
+            console.log("4")
             neg = response.data.choices[0].text;
             db.any(queryReviews)
             .then(dataReviews => {
+              console.log("5")
               res.render("pages/review", { movie: dataMovies, dbd: dbr, positive: pos, neutral: nrl, negative: neg });
             })
             .catch(err2 => {
