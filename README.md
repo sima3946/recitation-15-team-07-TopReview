@@ -18,6 +18,13 @@ For movie lovers trying to get a comprehensive view of a movie without having to
 ## Instructions on how to run the application locally.
 
 ## How to run the tests
+At the bottom of the index.js jile, you will see
+
+// module.exports = app.listen(3000);
+app.listen(3000);
+
+Uncomment the top line and then comment out the bottom line
+The notes on what the tests do can be found in the file Lab_11_UAT_plans.txt
 
 ## Link to the deployed application
 - Link to [Project Guideline](./Milestone%20Submissions/Project%20Guideline.pdf)
