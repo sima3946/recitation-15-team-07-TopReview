@@ -19,3 +19,46 @@ Front-end for login and registration are finished. For the home page, there is a
 however due to some reassessments, settings as well as the profile page for the side navigation bar have been put on hold. The review page is being worked on
 by Gunhi, as well the back-end is currently the focus of it. With all of this, we are roughly 1/4 of the way through the entire project and now hope to 
 pick up the pace in order to finish on time. 
+
+
+Week Two Release Notes:
+
+WEEK Two REPORT
+| Team Member | Number of Commits |
+| — |— |
+| Gunhi Kim | 8 |
+| Tyler Kloster | 9 |
+| Brandon Lehman | x |
+| Siranush Mazmandyan | 13 |
+| Alex Pham | 6 |
+| Kira Velez | 10 |
+
+Front-end for login and registration are finished and properly being loaded into databse via API calls. API enpdpoint route/calls are still being developed in order to get movies loaded into database from TMDb and one other movie review database/api which is TBD. Brandon is no longer in the group which removes TopReview's search functionality from the development process. Profile page is still being configured (both back and front end). At this point, both backend and frontend are being worked on and project is 2/4 complete. 
+
+Week Three Release Notes:
+
+WEEK Three REPORT
+| Team Member | Number of Commits |
+| — | — |
+| Gunhi Kim | 11 |
+| Tyler Kloster | 14 |
+| Brandon Lehman | x |
+| Siranush Mazmandyan | 17 |
+| Alex Pham | 9 |
+| Kira Velez | 15 |
+
+Movie Review and Movie API calls are officially done - databases are being loaded fully. Still working on trying to access movie reviews and movie review data to put in to chatGPT qury as well as group by sentiment score. Home page can now load movies and frontend looks presentable, still working on functionality to view cards individuall and put review information beside. Profile page is working and fully functional with user data that is stored in database via registration/login page.
+
+Week Four Release Notes:
+
+WEEK Four REPORT
+| Team Member | Number of Commits |
+| — | — |
+| Gunhi Kim | 14 |
+| Tyler Kloster | 17 |
+| Brandon Lehman | x |
+| Siranush Mazmandyan | 19 |
+| Alex Pham | 13 |
+| Kira Velez | 17 |
+
+Everythhing is pretty much complete. Still working on (debugging) correctly retrieving review data from SQL database and filtering it through ChatGPT API. Apart form that presentation deliverables are 85% done and now all that is left is to continue testing, polish up slight details on the front end and figure out who is presenting and delivering what according to the shared slides and "script". Also need to make sure website is fully functional in order to ensure demo during presentation is accurate and smooth.

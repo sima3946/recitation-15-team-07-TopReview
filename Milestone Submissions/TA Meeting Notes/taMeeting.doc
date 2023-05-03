@@ -34,7 +34,7 @@ Notes:
         APIs are not promised, HOWEVER WE HAVE TO WORK ON THEM 
 
 Meeting #2
-Date: 04/12/2023
+Date: 04/19/2023
 Time: 11:15 - 11:30 AM
 Attendees: Siranush, Kira, Gunhi, Tyler, Alex(Came in for a couple seconds)
 
@@ -71,3 +71,136 @@ Notes:
     PROJECT GOALS FOR NEXT WEEK:
         All back-end is to be done by the next Meeting
         Figure out the next API to use
+
+
+Meeting #3
+Date: 04/26/2023
+Time: 11:15 - 11:30 AM
+Attendees: Siranush, Kira, Gunhi, Tyler
+
+Notes:
+    Update project board, 
+        epics: need to make proper epics
+        user acceptance: acceptance period is fixed from last week
+        criteria: acceptance criteria is fixed, continually add as you post more epics.
+
+    Release Notes:
+        Need to update release notes for new week and new changes made to the project.
+
+    Scribe:
+        Names, number of commits, which commit is the most significant
+
+        Kira, ChatGPT API implementation
+
+        Sira, Profile Page partials and layout implementation
+
+        Tyler, Home page (cards) and front-end functionality (able to click on cards)
+
+        Gunhi, added LetterBoxd API route. 
+        
+        Alex, Google Cloud API Sentiment analysis configuration.
+
+        Brandon, (no longer in group)
+
+    Individual Contribution:
+        How well do you communicate with everyone in the team?
+        How often do you update the project board?
+            This is changing the status of what you are working on within the project board
+        How well are you documenting your code?
+
+    PROJECT GOALS FOR NEXT WEEK:
+        Begin testing and work on presentation final deliverables content, start practicing and rehearsing presentation slides and "script".
+
+Meeting # 4
+Date: 05/02/2023
+Time: 4:00 - 5:00 PM
+Attendees: Siranush, Kira, Gunhi, Tyler, Alex
+
+Notes:
+    Update project board: 
+        epics: need to make proper epics
+        user acceptance: acceptance period is fixed from last week
+        criteria: acceptance criteria is fixed, continually add as you post more epics.
+
+    Release Notes:
+        Updates realease notes for all weeks.
+
+    Scribe:
+        Kira, ChatGPT API implementation done, updating project board, getting email out, helping with homepage layout problem.
+
+        Sira, Profile Page partials and layout implementation done, Fixing the homepage layout, and movies review issues
+
+        Tyler, Home page (cards) and front-end functionality (able to click on cards)
+
+        Gunhi, checking database, working on the final project. 
+        
+        Alex, fixed Google Cloud API Sentiment analysis configuration.
+
+        Brandon, (no longer in group)
+
+    Individual Contribution:
+        How well do you communicate with everyone in the team?
+        How often do you update the project board?
+            weekly but had issues with the epics 
+        How well are you documenting your code?
+            docummetning code could be better need to go through and make commits where needed.
+
+    PROJECT GOALS FOR NEXT WEEK:
+        Work on final presentation: start practicing and rehearsing presentation slides and "script".
+
+TA Email:
+    Release Notes:
+        Look in the Release notes.txt or go to the releases on the GitHub page. 
+        Link here: https://github.com/sima3946/recitation-15-team-07-TopReview/releases/tag/v4.0.0 
+    Presentation Link:
+        Link to your project presentation slides
+        We are meeting tomorrow morning to make the slides together and review them.
+        https://docs.google.com/presentation/d/1fK_2tqjM-0_vW3aYyped6YbHh-CUcl8EDF7FprvjS5w/edit#slide=id.p
+    Meeting Notes:
+        Added
+    Functional Features:
+        Working features: 
+            The login page:
+            Once the user registers, the user credentials are stored in the database. The user can log in, which can be checked through
+            the profile page. 
+            The register page:
+            The user must have a password and user name that fits the criteria to register. Once registered, this will take them to the login page.
+            The home page:
+            Once logged in, the home page will be rendered with five movie cards, and a navigation bar will be placed on the side. 
+            The movie cards display the photo and name of the movie. The review page will be rendered if the movie cards are clicked. 
+            Through the navigation bar, they may refresh the page, check their profile, or log out.
+            The review page:
+            Once a movie is picked from the home page, the review page will be rendered. On the review page, the user may see the same movie card
+            as before with a series of reviews. The reviews are categorized as positive, neutral, and negative. The reviews are generated through 
+            chatGPT.
+
+        Todo: 
+            The home page has an issue where the movie cards are displayed under the navigation bar. The navigation bar also has an issue where 
+            the dropdown menu is not popping up. 
+
+    Main Branch
+        All the inactive branches are merged into "main."
+        Active branch: api_calls. This branch is used to figure out the problem with the home page. 
+        Individual Commits
+    Individual Commits:
+        Name                             Commits to main()        Notes
+        Gunhi Kim; guki7733              2                        Working on the final presentation outline, project meeting, and release notes.
+        Tyler Kloster; tkloster01        6                        Working to integrate the other branches and checking any errors with the database.
+        Brandon Lehman; Lumi297          0                        He is not in the group anymore.
+        Siranush Mazmandyan; sima3946    6                        Initialization of the database and working on changing some of the features 
+                                                                  for the navigation bar. 
+        Alex Pham; avqpham01             4                        Fixing the sentimental analysis.
+        Kira Velez; kive7791             14                       Finished setting up the review cards where chatGPT summarized the reviews. 
+                                                                  Finished and initialized the ChatGPT function. 
+    Team Contribution:
+        Name                            Tasks
+        Gunhi Kim; guki7733             Updating meeting notes.
+        Tyler Kloster; tkloster01       Update project board, Debugging for the database and layout of the pages.
+        Brandon Lehman; Lumi297         Is not in the group anymore.
+        Siranush Mazmandyan; sima3946   Helping others fix issues for ChatGPT and Movies issues. 
+                                        Updating the project board and writing weekly meeting notes.
+        Alex Pham; avqpham01
+        Kira Velez; kive7791            Debugging the database, helping people with issues with their code in movies and with the layout of pages. 
+                                        Updated the project board and wrote meeting notes.
+    Concerns:
+        Problems with certain aspects of the code are not working, which could cause us not to have a fully functional webpage.

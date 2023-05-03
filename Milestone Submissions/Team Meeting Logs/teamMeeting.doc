@@ -204,4 +204,39 @@ Outcomes:
    
     Actions:
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Fourth meeting:
+Project: TopReview
+Attendees: Kira, Siranush, Tyler, Alex
+Date&Time: 4/29: 2:00 - 2:15 PM 
+
+Agenda:
+    Sentimental analysis and movie review (get APIs) are currently not functioning together
+    Calling movie/review database APIs BEFORE the user logs in 
+
+
+
+
+Notes:
+    Fix the epic thing/project board, or else we lose even more pts :(
+    Have to create (release notes 3) before recitation 4/27
+    TA meeting notes
+    Have to come together to talk about the presentation and practice
+        THIS WEDNESDAY, AFTER THE TA MEETING
+
+
+
+Outcomes:
+    Key decisions:
+        Fix the epic thing/project board, or else we lose even more pts :(
+        Make sure that we have 4 release notes done before the next TA meeting 
+        Sira will be consolidating the movie population into the / api
+        Tyler will be consolidating all review apis 
+        Alex will be checking the review/sentiment APIs and making sure they are working
+        FINAL STRETCH WE’VE GOT THIS!!!
+
+   
+    Actions:
+
         

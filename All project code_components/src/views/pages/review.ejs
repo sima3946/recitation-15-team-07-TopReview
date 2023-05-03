@@ -12,10 +12,31 @@
     </div>
     <div class="column-right">
         <div class="card card-review bg-dark">
-            <h2 class="fw-bold mb-2 text-uppercase title text">TMDB</h2>
-        </div>
-        <div class="card card-review bg-dark">
-
+            <h2 class="fw-bold mb-2 text-uppercase title text"><%= dbr %></h2>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Positive</h5>
+                    <p class="card-text">
+                        <%= pos %>
+                    </p>
+                </div>
+            </div>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Neutral</h5>
+                    <p class="card-text">
+                        <%= nrl %>
+                    </p>
+                </div>
+            </div>
+            <div class="card bg-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Negative</h5>
+                    <p class="card-text">
+                        <%= neg %>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

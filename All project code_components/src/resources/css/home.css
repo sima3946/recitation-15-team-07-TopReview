@@ -8,7 +8,7 @@ Home Page Style Guide (Not in Use; need to figure this out)
 }
 
 .title {
-    color: white;
+    color: aliceblue;
     margin-top: .5cm;
     margin-left: .5cm;
 }
@@ -59,6 +59,7 @@ Home Page Style Guide (Not in Use; need to figure this out)
 }
 
 .card-review {
+    color: aliceblue;
     margin-left: 3vw;
     margin-top: 2vh;
     margin-bottom: 2vh;
