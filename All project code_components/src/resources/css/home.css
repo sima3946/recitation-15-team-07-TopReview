@@ -23,6 +23,7 @@ Home Page Style Guide (Not in Use; need to figure this out)
 .container {
     margin-top: .4cm;
     margin-right: .1cm;
+    margin-left: 0.4cm;
 }
 
 .slider {
@@ -38,7 +39,7 @@ Home Page Style Guide (Not in Use; need to figure this out)
 .bigCard {
     width: 82%;
     margin-top: .3cm;
-    margin-left: .3cm;
+    margin-left: 5cm;
     margin-bottom: .3cm;
     margin-right: .3cm;
 }
