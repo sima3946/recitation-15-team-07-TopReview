@@ -10,6 +10,7 @@ For movie lovers trying to get a comprehensive view of a movie without having to
 - Kira Velez; kive7791
 
 ## Technology Stack References
+![Technology Stack References](/recitation-15-team-07-TopReview/All%20project%20code_components/src/resources/img/Technology%20Stack.png)
 
 ## Prerequisites to run the application
 > Any software that needs to be installed to run the application
